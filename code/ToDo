@@ -1,1 +1,12 @@
 - integrate multiple faces and pass them to the emotion recognizer
+- Let the model train
+
+DONE:
+- Workflow in orde van DPL
+- FindingEmoDataset gebruikt en opgekuist zodat enkel laadbare images worden gebruikt
+- Output versimpeld door te mappen naar FER2013 emoties
+- Emotie herkenner werkt
+- Scene herkenner werkt
+- Prototype aanpak meerdere gezichten
+- FindingEmo(Face/Scene)Images class gemaakt om een index om te zetten in een torch tensor, bespaart veel geheugen
+- Simpel prolog bestand gemaakt om een simpele query uit te voeren voor emoties en scene.
