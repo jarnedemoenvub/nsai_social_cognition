@@ -37,11 +37,3 @@ happy_prediction(Image) :-
     dominant_face_emotion(Image, _, 3),  % Face shows happy (emotion index 3)
     scene_prediction(Image, _).          % Any scene (for now)
 
-% Emotion name mapping
-emotion_name(0, angry).
-emotion_name(1, disgust).
-emotion_name(2, fear).
-emotion_name(3, happy).
-emotion_name(4, sad).
-emotion_name(5, surprise).
-emotion_name(6, neutral).
