@@ -22,7 +22,7 @@ multi_face_emotion(Image, AggregatedEmotion) :-
     face_emotion_prob(Image, _, AggregatedEmotion).
 
 % MAIN PREDICATE 
-enhanced_final_emotion(FaceImg, SceneImg, FindingEmoIdx) :-
+final_emotion(FaceImg, SceneImg, FindingEmoIdx) :-
     multi_face_emotion(FaceImg, ModelEmotion),  % Uses all the faces
     scene_valence(SceneImg, SceneValence),
     scene_emotion_boost(ModelEmotion, SceneValence),
@@ -48,22 +48,13 @@ primary_face_emotion(Image, EmotionIdx) :-
     face_emotion_prob(Image, _, EmotionIdx).
     
 % Scene-emotion compatibility rules with probabilistic weights
-0.9::scene_emotion_boost(3, joy).     % Happy emotion + joy place = strong boost
-0.8::scene_emotion_boost(4, sad).     % Sad emotion + sad place = strong boost  
-0.7::scene_emotion_boost(6, neutral). % Neutral emotion + neutral place = medium boost
-0.3::scene_emotion_boost(3, sad).     % Happy emotion + sad place = weak (contradiction)
-0.3::scene_emotion_boost(4, joy).     % Sad emotion + joy place = weak (contradiction)
-0.5::scene_emotion_boost(_, neutral). % Any emotion + neutral place = medium
-0.4::scene_emotion_boost(_, _).       % Default compatibility
-
-
-% Enhanced final prediction using multi-face
-enhanced_final_emotion(FaceImg, SceneImg, FindingEmoIdx) :-
-    multi_face_emotion(FaceImg, ModelEmotion),
-    scene_valence(SceneImg, SceneValence),
-    scene_emotion_boost(ModelEmotion, SceneValence),
-    mapped_emotion(ModelEmotion, FindingEmoIdx).
-
+t(_)::scene_emotion_boost(3, joy).     % Happy emotion + joy place = strong boost
+t(_)::scene_emotion_boost(4, sad).     % Sad emotion + sad place = strong boost  
+t(_)::scene_emotion_boost(6, neutral). % Neutral emotion + neutral place = medium boost
+t(_)::scene_emotion_boost(3, sad).     % Happy emotion + sad place = weak (contradiction)
+t(_)::scene_emotion_boost(4, joy).     % Sad emotion + joy place = weak (contradiction)
+t(_)::scene_emotion_boost(_, neutral). % Any emotion + neutral place = medium
+t(_)::scene_emotion_boost(_, _).       % Default compatibility
 
 % Learn mapping of model emotions to dataset emotions
 % Angry -> rage, annoyance
@@ -102,6 +93,7 @@ t(_)::mapped_emotion(5, 22).
 t(_)::mapped_emotion(6, 8).
 t(_)::mapped_emotion(6, 7).
 t(_)::mapped_emotion(6, 15).
+
 % Places that trigger happiness
 t(_)::joy_place(7).      % amusement_park
 t(_)::joy_place(11).     % arcade
