@@ -21,3 +21,7 @@ faces(FaceImg, AllEmotions) :-
 scene(SceneImg, SceneIdx) :-
     scene_prediction(SceneImg, SceneIdx).
 
+% Mapping of model emotions to dataset emotions
+mapped_emotion(0, anger).
+mapped_emotion(0, rage).
+

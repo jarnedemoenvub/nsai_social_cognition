@@ -1,0 +1,4 @@
+neuraal netw fixed houden, parameters regels wel trainen
+scallop
+overzichtspapers nsai
+gelezen papers overzicht maken

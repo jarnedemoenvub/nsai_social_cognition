@@ -1,0 +1,37 @@
+People in kitchen/dining rooms are more likely to be happy or neutral
+People at work/office tend to be neutral/focused
+
+Emotion categories (model):
+0: angry
+1: disgust
+2: fear
+3: happy
+4: sad
+5: surprise
+6: neutral
+
+Emotion labels (FindingEmo):
+0: Trust
+1: Interest
+2: Apprehension
+3: Anticipation
+4: Anger
+5: Joy
+6: Grief
+7: Serenity
+8: Boredom
+9: Ecstasy
+10: Fear
+11: Vigilance
+12: Sadness
+13: Rage
+14: Annoyance
+15: Acceptance
+16: Terror
+17: Amazement
+18: Surprise
+19: Pensiveness
+20: Admiration
+21: Loathing
+22: Distraction
+23: Disgust
