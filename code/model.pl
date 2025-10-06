@@ -9,7 +9,7 @@ nn(scene_net, [X], Y, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 % FlatIndex = FaceIndex * 7 + EmotionIndex
 face_emotion_prob(Image, FaceIdx, EmotionIdx) :-
     between(0, 4, FaceIdx),  
-    between(0, 7, EmotionIdx),
+    between(0, 6, EmotionIdx),
     FlatIdx is FaceIdx * 7 + EmotionIdx,
     all_face_emotions(Image, FlatIdx).
 
@@ -17,15 +17,53 @@ face_emotion_prob(Image, FaceIdx, EmotionIdx) :-
 faces(FaceImg, AllEmotions) :-
     all_face_emotions(FaceImg, AllEmotions).
 
-dominant_face_emotion(Image, FaceIdx, EmotionIdx) :-
-    between(0, 4, FaceIdx),
-    face_emotion_prob(Image, FaceIdx, EmotionIdx),
-    \+ (face_emotion_prob(Image, FaceIdx, OtherEmotionIdx),
-        OtherEmotionIdx \= EmotionIdx).
+% Multi-face emotion aggregation (considers ALL faces)
+multi_face_emotion(Image, AggregatedEmotion) :-
+    face_emotion_prob(Image, _, AggregatedEmotion).
+
+% MAIN PREDICATE 
+enhanced_final_emotion(FaceImg, SceneImg, FindingEmoIdx) :-
+    multi_face_emotion(FaceImg, ModelEmotion),  % Uses all the faces
+    scene_valence(SceneImg, SceneValence),
+    scene_emotion_boost(ModelEmotion, SceneValence),
+    mapped_emotion(ModelEmotion, FindingEmoIdx).
 
 % Scene prediction 
 scene(SceneImg, SceneIdx) :-
     scene_prediction(SceneImg, SceneIdx).
+
+scene_valence(Image, joy) :-
+    scene(Image, SceneIdx),
+    joy_place(SceneIdx).
+
+scene_valence(Image, sad) :-
+    scene(Image, SceneIdx),
+    sad_place(SceneIdx).
+
+scene_valence(Image, neutral) :-
+    scene(Image, SceneIdx),
+    neutral_place(SceneIdx).
+
+primary_face_emotion(Image, EmotionIdx) :-
+    face_emotion_prob(Image, _, EmotionIdx).
+    
+% Scene-emotion compatibility rules with probabilistic weights
+0.9::scene_emotion_boost(3, joy).     % Happy emotion + joy place = strong boost
+0.8::scene_emotion_boost(4, sad).     % Sad emotion + sad place = strong boost  
+0.7::scene_emotion_boost(6, neutral). % Neutral emotion + neutral place = medium boost
+0.3::scene_emotion_boost(3, sad).     % Happy emotion + sad place = weak (contradiction)
+0.3::scene_emotion_boost(4, joy).     % Sad emotion + joy place = weak (contradiction)
+0.5::scene_emotion_boost(_, neutral). % Any emotion + neutral place = medium
+0.4::scene_emotion_boost(_, _).       % Default compatibility
+
+
+% Enhanced final prediction using multi-face
+enhanced_final_emotion(FaceImg, SceneImg, FindingEmoIdx) :-
+    multi_face_emotion(FaceImg, ModelEmotion),
+    scene_valence(SceneImg, SceneValence),
+    scene_emotion_boost(ModelEmotion, SceneValence),
+    mapped_emotion(ModelEmotion, FindingEmoIdx).
+
 
 % Learn mapping of model emotions to dataset emotions
 % Angry -> rage, annoyance
