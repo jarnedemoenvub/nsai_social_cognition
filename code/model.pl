@@ -44,9 +44,6 @@ scene_valence(Image, neutral) :-
     scene(Image, SceneIdx),
     neutral_place(SceneIdx).
 
-primary_face_emotion(Image, EmotionIdx) :-
-    face_emotion_prob(Image, _, EmotionIdx).
-    
 % Scene-emotion compatibility rules with probabilistic weights
 t(_)::scene_emotion_boost(3, joy).     % Happy emotion + joy place = strong boost
 t(_)::scene_emotion_boost(4, sad).     % Sad emotion + sad place = strong boost  
