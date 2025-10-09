@@ -1,4 +1,11 @@
+
 neuraal netw fixed houden, parameters regels wel trainen
 scallop
 overzichtspapers nsai
 gelezen papers overzicht maken
+
+Enkel prolog param veranderen, wat doet de training met mijn netwerk? Wat is er veranderd?
+Welke param nu echt trainen?
+problog --> hoe kan je die trainen? Zo kan je enkel prolog params trainen en niet het neuraal netwerk.
+Nieue onderzoeksvraag --> welke is interessanter, samen trainen of niet?
+
