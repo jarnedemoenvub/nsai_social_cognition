@@ -9,8 +9,6 @@ problog --> hoe kan je die trainen? Zo kan je enkel prolog params trainen en nie
 Nieue onderzoeksvraag --> welke is interessanter, samen trainen of niet?
 
 ---------------------------
-neural network face_att_net that will output a prob 
-distr over the 5 faces so that it tells you on which face to focus on
-
-scene2emo_net that will output place to 7 emotions or do I go 
+engine register foreign argmax_vec
+outputs from query are not softmax but raw logits!!!
 
