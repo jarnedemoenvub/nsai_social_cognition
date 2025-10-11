@@ -8,9 +8,9 @@ Welke param nu echt trainen?
 problog --> hoe kan je die trainen? Zo kan je enkel prolog params trainen en niet het neuraal netwerk.
 Nieue onderzoeksvraag --> welke is interessanter, samen trainen of niet?
 
-ToDo
-- Prolog file kan beter, mag ook zeker geen probabiliteiten boven de 1 verkrijgen --> In plaats van van links naar rechts ,
-zou je kunnen gaan van groot naar klein. Een groter gezicht zal meer weight hebben op de finale emotie predictie.
-- Maak veel minder parameters trainable. Belangrijk is dat ik de weights zou kunnen extraheren. Bv zoveel procent voor die face,
-zoveel voor die andere en dan uiteindelijk nog een percentage naar de scene.
-- Training lukt enkel met 200 samples? Misschien een efficientere implementatie nodig?
+---------------------------
+neural network face_att_net that will output a prob 
+distr over the 5 faces so that it tells you on which face to focus on
+
+scene2emo_net that will output place to 7 emotions or do I go 
+
