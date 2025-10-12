@@ -9,6 +9,5 @@ problog --> hoe kan je die trainen? Zo kan je enkel prolog params trainen en nie
 Nieue onderzoeksvraag --> welke is interessanter, samen trainen of niet?
 
 ---------------------------
-engine register foreign argmax_vec
-outputs from query are not softmax but raw logits!!!
+face detection cache the image??
 
