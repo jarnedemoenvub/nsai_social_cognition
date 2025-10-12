@@ -9,9 +9,7 @@
 nn(multi_face_net, [X], Y,
     [0,1,2,3,4,5,6,
      7,8,9,10,11,12,13,
-     14,15,16,17,18,19,20,
-     21,22,23,24,25,26,27,
-     28,29,30,31,32,33,34]) :: face_flat(X,Y).
+     14,15,16,17,18,19,20]) :: face_flat(X,Y).
 
 % Scene image → deterministic 512-D feature vector
 nn(scene_net, [X], Vec) :: scene_raw_vec(X, Vec).
@@ -43,12 +41,10 @@ face_emotion_prob(X, FaceIdx, EmoIdx) :-
 % 3. WEIGHTED FUSION
 % ============================
 
-0.4::use_face_0.
-0.2::use_face_1.
-0.1::use_face_2.
-0.05::use_face_3.
-0.05::use_face_4.
-0.2::use_scene.
+t(_)::use_face_0.
+t(_)::use_face_1.
+t(_)::use_face_2.
+t(_)::use_scene.
 
 % ============================
 % 4. BASE EMOTION PREDICTION
@@ -62,12 +58,6 @@ base_emotion(FaceImg, SceneImg, EmoIdx) :-
 
 base_emotion(FaceImg, SceneImg, EmoIdx) :-
     use_face_2, face_emotion_prob(FaceImg, 2, EmoIdx).
-
-base_emotion(FaceImg, SceneImg, EmoIdx) :-
-    use_face_3, face_emotion_prob(FaceImg, 3, EmoIdx).
-
-base_emotion(FaceImg, SceneImg, EmoIdx) :-
-    use_face_4, face_emotion_prob(FaceImg, 4, EmoIdx).
 
 base_emotion(FaceImg, SceneImg, EmoIdx) :-
     use_scene,
