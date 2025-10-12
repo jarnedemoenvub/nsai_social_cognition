@@ -1,5 +1,5 @@
 % ============================================================
-% NEUROSYMBOLIC EMOTION FUSION MODEL (WITH FINDINGEMO OUTPUT)
+% NEUROSYMBOLIC EMOTION FUSION MODEL (WITH CORRECT FINDINGEMO MAPPINGS)
 % ============================================================
 
 % ============================
@@ -19,35 +19,16 @@ nn(scene_net, [X], Vec) :: scene_raw_vec(X, Vec).
 % Scene feature vector → 7 base emotions
 nn(scene2emo_net, [Vec], E, [0,1,2,3,4,5,6]) :: scene_emotion(Vec,E).
 
+% Test predicates
+multi_face_test(FaceImg, FaceFlat):-
+    face_flat(FaceImg, FaceFlat).
+
+scene_test(SceneImg, Emo):-
+    scene_raw_vec(SceneImg, Vec),
+    scene_emotion(Vec, Emo).
 
 % ============================
-% 2. SYMBOLIC KNOWLEDGE BASE
-% ============================
-
-% Base emotion polarity (used by mapping)
-emotion_group(0, negative).  % angry
-emotion_group(1, negative).  % disgust
-emotion_group(2, negative).  % fear
-emotion_group(3, positive).  % happy
-emotion_group(4, negative).  % sad
-emotion_group(5, positive).  % surprise
-emotion_group(6, neutral).   % neutral
-
-
-% ============================
-% 3. TRAINABLE / FIXED WEIGHTS
-% ============================
-
-0.8::w_face(0).
-0.2::w_face(1).
-0.05::w_face(2).
-0.05::w_face(3).
-0.05::w_face(4).
-0.5::w_scene.
-
-
-% ============================
-% 4. FACE FEATURES
+% 2. FACE PROCESSING
 % ============================
 
 flat_index(FaceIdx, EmoIdx, Flat) :- Flat is FaceIdx * 7 + EmoIdx.
@@ -58,79 +39,105 @@ face_emotion_prob(X, FaceIdx, EmoIdx) :-
     flat_index(FaceIdx, EmoIdx, Flat),
     face_flat(X, Flat).
 
+% ============================
+% 3. WEIGHTED FUSION
+% ============================
+
+0.4::use_face_0.
+0.2::use_face_1.
+0.1::use_face_2.
+0.05::use_face_3.
+0.05::use_face_4.
+0.2::use_scene.
 
 % ============================
-% 5. FUSION: BASE EMOTION PROBABILITY
+% 4. BASE EMOTION PREDICTION
 % ============================
 
-% Contribution from each face
-final_emotion(FaceImg, SceneImg, EmoIdx) :-
-    w_face(FIdx),
-    face_emotion_prob(FaceImg, FIdx, EmoIdx).
+base_emotion(FaceImg, SceneImg, EmoIdx) :-
+    use_face_0, face_emotion_prob(FaceImg, 0, EmoIdx).
 
-% Contribution from the scene via neural adapter
-final_emotion(FaceImg, SceneImg, EmoIdx) :-
-    w_scene,
+base_emotion(FaceImg, SceneImg, EmoIdx) :-
+    use_face_1, face_emotion_prob(FaceImg, 1, EmoIdx).
+
+base_emotion(FaceImg, SceneImg, EmoIdx) :-
+    use_face_2, face_emotion_prob(FaceImg, 2, EmoIdx).
+
+base_emotion(FaceImg, SceneImg, EmoIdx) :-
+    use_face_3, face_emotion_prob(FaceImg, 3, EmoIdx).
+
+base_emotion(FaceImg, SceneImg, EmoIdx) :-
+    use_face_4, face_emotion_prob(FaceImg, 4, EmoIdx).
+
+base_emotion(FaceImg, SceneImg, EmoIdx) :-
+    use_scene,
     scene_raw_vec(SceneImg, Vec),
     scene_emotion(Vec, EmoIdx).
 
-
 % ============================
-% 6. MAPPING TO FINDINGEMO SPACE (0–23)
+% 5. MAPPING TO FINDINGEMO EMOTIONS (CORRECTED INDICES)
 % ============================
 
-% Angry → anger-related emotions
-0.8::mapped_emotion(0, 4).   % Anger
-0.1::mapped_emotion(0, 13).  % Rage
-0.1::mapped_emotion(0, 14).  % Annoyance
+% Angry (0) → anger-related emotions
+0.6::mapped_emotion(0, 4).   % Anger
+0.2::mapped_emotion(0, 13).  % Rage
+0.2::mapped_emotion(0, 14).  % Annoyance
 
-% Disgust → loathing/disgust
+% Disgust (1) → disgust-related emotions
 0.7::mapped_emotion(1, 23).  % Disgust
 0.3::mapped_emotion(1, 21).  % Loathing
 
-% Fear → fear/apprehension/terror/vigilance
+% Fear (2) → fear-related emotions
 0.4::mapped_emotion(2, 10).  % Fear
 0.2::mapped_emotion(2, 2).   % Apprehension
 0.2::mapped_emotion(2, 16).  % Terror
 0.2::mapped_emotion(2, 11).  % Vigilance
 
-% Happy → joy/ecstasy/serenity/admiration/acceptance
-0.4::mapped_emotion(3, 5).   % Joy
+% Happy (3) → joy/positive emotions
+0.3::mapped_emotion(3, 5).   % Joy
 0.2::mapped_emotion(3, 9).   % Ecstasy
-0.2::mapped_emotion(3, 7).   % Serenity
-0.1::mapped_emotion(3, 20).  % Admiration
-0.1::mapped_emotion(3, 15).  % Acceptance
+0.15::mapped_emotion(3, 7).   % Serenity
+0.1::mapped_emotion(3, 20). % Admiration
+0.1::mapped_emotion(3, 15). % Acceptance
+0.1::mapped_emotion(3, 0).   % Trust from Happy
+0.05::mapped_emotion(3, 3).  % Anticipation from Happy
 
-% Sad → sadness/grief/pensiveness
-0.5::mapped_emotion(4, 12).  % Sadness
+
+% Sad (4) → sadness-related emotions
+0.4::mapped_emotion(4, 12).  % Sadness
 0.3::mapped_emotion(4, 6).   % Grief
-0.2::mapped_emotion(4, 19).  % Pensiveness
+0.3::mapped_emotion(4, 19).  % Pensiveness
 
-% Surprise → surprise/amaze/distraction
-0.5::mapped_emotion(5, 18).  % Surprise
-0.3::mapped_emotion(5, 17).  % Amazement
-0.2::mapped_emotion(5, 22).  % Distraction
+% Surprise (5) → surprise-related emotions
+0.4::mapped_emotion(5, 18).  % Surprise
+0.25::mapped_emotion(5, 17).  % Amazement
+0.25::mapped_emotion(5, 22).  % Distraction
+0.1::mapped_emotion(5, 3).   % Anticipation from Surprise
 
-% Neutral → boredom/serenity/acceptance
-0.4::mapped_emotion(6, 8).   % Boredom
-0.3::mapped_emotion(6, 7).   % Serenity
-0.3::mapped_emotion(6, 15).  % Acceptance
 
-% Final output in FindingEmo space
-final_findingemo(Faces, Scene, FEIdx) :-
-    final_emotion(Faces, Scene, BaseIdx),
-    mapped_emotion(BaseIdx, FEIdx).
+% Neutral (6) → neutral/contemplative emotions
+0.3::mapped_emotion(6, 8).   % Boredom
+0.25::mapped_emotion(6, 15). % Acceptance
+0.2::mapped_emotion(6, 7).  % Serenity
+0.2::mapped_emotion(6, 1).   % Interest
+0.05::mapped_emotion(6, 0).  % Trust from Neutral
 
 
 % ============================
-% 7. EXPLAINABILITY QUERIES
+% 7. FINAL PREDICTION
+% ============================
+
+final_findingemo(Faces, Scene, FEIdx) :-
+    base_emotion(Faces, Scene, BaseIdx),
+    mapped_emotion(BaseIdx, FEIdx).
+
+% ============================
+% 8. EXPLAINABILITY QUERIES
 % ============================
 
 %   ?- query(final_findingemo(Faces, Scene, E)).
-%   ?- query(w_face(0)).
-%   ?- query(w_scene).
-%
-%   face0: 0.42, face1: 0.20, scene: 0.10 ...
+%   ?- query(use_face_0).
+%   ?- query(use_scene).
 % ============================================================
 % END OF MODEL
 % ============================================================
