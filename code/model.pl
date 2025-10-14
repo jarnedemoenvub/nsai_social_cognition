@@ -32,8 +32,7 @@ scene_test(SceneImg, Emo):-
 flat_index(FaceIdx, EmoIdx, Flat) :- Flat is FaceIdx * 7 + EmoIdx.
 
 face_emotion_prob(X, FaceIdx, EmoIdx) :-
-    between(0, 4, FaceIdx),
-    between(0, 6, EmoIdx),
+    (var(EmoIdx) -> between(0, 6, EmoIdx) ; true),
     flat_index(FaceIdx, EmoIdx, Flat),
     face_flat(X, Flat).
 
@@ -65,69 +64,8 @@ base_emotion(FaceImg, SceneImg, EmoIdx) :-
     scene_emotion(Vec, EmoIdx).
 
 % ============================
-% 5. MAPPING TO FINDINGEMO EMOTIONS (CORRECTED INDICES)
-% ============================
-
-% Angry (0) → anger-related emotions
-0.6::mapped_emotion(0, 4).   % Anger
-0.2::mapped_emotion(0, 13).  % Rage
-0.2::mapped_emotion(0, 14).  % Annoyance
-
-% Disgust (1) → disgust-related emotions
-0.7::mapped_emotion(1, 23).  % Disgust
-0.3::mapped_emotion(1, 21).  % Loathing
-
-% Fear (2) → fear-related emotions
-0.4::mapped_emotion(2, 10).  % Fear
-0.2::mapped_emotion(2, 2).   % Apprehension
-0.2::mapped_emotion(2, 16).  % Terror
-0.2::mapped_emotion(2, 11).  % Vigilance
-
-% Happy (3) → joy/positive emotions
-0.3::mapped_emotion(3, 5).   % Joy
-0.2::mapped_emotion(3, 9).   % Ecstasy
-0.15::mapped_emotion(3, 7).   % Serenity
-0.1::mapped_emotion(3, 20). % Admiration
-0.1::mapped_emotion(3, 15). % Acceptance
-0.1::mapped_emotion(3, 0).   % Trust from Happy
-0.05::mapped_emotion(3, 3).  % Anticipation from Happy
-
-
-% Sad (4) → sadness-related emotions
-0.4::mapped_emotion(4, 12).  % Sadness
-0.3::mapped_emotion(4, 6).   % Grief
-0.3::mapped_emotion(4, 19).  % Pensiveness
-
-% Surprise (5) → surprise-related emotions
-0.4::mapped_emotion(5, 18).  % Surprise
-0.25::mapped_emotion(5, 17).  % Amazement
-0.25::mapped_emotion(5, 22).  % Distraction
-0.1::mapped_emotion(5, 3).   % Anticipation from Surprise
-
-
-% Neutral (6) → neutral/contemplative emotions
-0.3::mapped_emotion(6, 8).   % Boredom
-0.25::mapped_emotion(6, 15). % Acceptance
-0.2::mapped_emotion(6, 7).  % Serenity
-0.2::mapped_emotion(6, 1).   % Interest
-0.05::mapped_emotion(6, 0).  % Trust from Neutral
-
-
-% ============================
 % 7. FINAL PREDICTION
 % ============================
 
 final_findingemo(Faces, Scene, FEIdx) :-
-    base_emotion(Faces, Scene, BaseIdx),
-    mapped_emotion(BaseIdx, FEIdx).
-
-% ============================
-% 8. EXPLAINABILITY QUERIES
-% ============================
-
-%   ?- query(final_findingemo(Faces, Scene, E)).
-%   ?- query(use_face_0).
-%   ?- query(use_scene).
-% ============================================================
-% END OF MODEL
-% ============================================================
+    base_emotion(Faces, Scene, FEIdx).

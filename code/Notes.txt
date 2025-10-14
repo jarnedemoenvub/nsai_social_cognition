@@ -10,4 +10,6 @@ Nieue onderzoeksvraag --> welke is interessanter, samen trainen of niet?
 
 ---------------------------
 face detection cache the image??
+Check if training data image: label is actually correct, maybe I'm learning wrong labels?
+Use higher learning rate
 

@@ -10,7 +10,7 @@ Emotion categories (model):
 Emotion labels (FindingEmo):
 0: Trust
 1: Interest
-2: Apprehension
+2: Apprehension (anxiety/fear)
 3: Anticipation
 4: Anger
 5: Joy
@@ -19,7 +19,7 @@ Emotion labels (FindingEmo):
 8: Boredom
 9: Ecstasy
 10: Fear
-11: Vigilance
+11: Vigilance (waakzaamheid)
 12: Sadness
 13: Rage
 14: Annoyance
@@ -27,9 +27,9 @@ Emotion labels (FindingEmo):
 16: Terror
 17: Amazement
 18: Surprise
-19: Pensiveness
+19: Pensiveness (bezinnend, nadenkend)
 20: Admiration
-21: Loathing
+21: Loathing (dislike, disgust)
 22: Distraction
 23: Disgust
 
