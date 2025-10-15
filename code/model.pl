@@ -32,7 +32,13 @@ scene_test(SceneImg, Emo):-
 flat_index(FaceIdx, EmoIdx, Flat) :- Flat is FaceIdx * 7 + EmoIdx.
 
 face_emotion_prob(X, FaceIdx, EmoIdx) :-
-    (var(EmoIdx) -> between(0, 6, EmoIdx) ; true),
+    var(EmoIdx),
+    between(0, 6, EmoIdx),
+    flat_index(FaceIdx, EmoIdx, Flat),
+    face_flat(X, Flat).
+
+face_emotion_prob(X, FaceIdx, EmoIdx) :-
+    nonvar(EmoIdx),
     flat_index(FaceIdx, EmoIdx, Flat),
     face_flat(X, Flat).
 
