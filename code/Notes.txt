@@ -9,13 +9,9 @@ problog --> hoe kan je die trainen? Zo kan je enkel prolog params trainen en nie
 Nieuwe onderzoeksvraag --> welke is interessanter, samen trainen of niet?
 
 ---------------------------
-Dataset can be heavily imbalanced!!
-
 Cache relies on row index of the shuffled and split Dataframes, so make sure the tensors are saved after shuffling, so check if the tensors match!
 
 check if all tensors are actually retrieved without errors, if I would've had dummy values everytime, then the training is random.
-
-Multi_face_net has batching = False which can cause extremely slow training time. 
 
 To Try:
 -----------------------------
@@ -31,5 +27,3 @@ scene2emo_network.optimizer = torch.optim.Adam(
 
 Handle class imbalance
 Bump up learning rate of SGD
-
-
