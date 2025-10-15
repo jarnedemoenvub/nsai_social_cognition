@@ -6,10 +6,30 @@ gelezen papers overzicht maken
 Enkel prolog param veranderen, wat doet de training met mijn netwerk? Wat is er veranderd?
 Welke param nu echt trainen?
 problog --> hoe kan je die trainen? Zo kan je enkel prolog params trainen en niet het neuraal netwerk.
-Nieue onderzoeksvraag --> welke is interessanter, samen trainen of niet?
+Nieuwe onderzoeksvraag --> welke is interessanter, samen trainen of niet?
 
 ---------------------------
-face detection cache the image??
-Check if training data image: label is actually correct, maybe I'm learning wrong labels?
-Use higher learning rate
+Dataset can be heavily imbalanced!!
+
+Cache relies on row index of the shuffled and split Dataframes, so make sure the tensors are saved after shuffling, so check if the tensors match!
+
+check if all tensors are actually retrieved without errors, if I would've had dummy values everytime, then the training is random.
+
+Multi_face_net has batching = False which can cause extremely slow training time. 
+
+To Try:
+-----------------------------
+Unfreeze a tiny slice of the scene backbone:
+for p in scene_pipeline.backbone[:-1].parameters():  # keep most frozen
+    p.requires_grad = False
+for p in scene_pipeline.backbone[-1].parameters():   # unfreeze last block
+    p.requires_grad = True
+scene2emo_network.optimizer = torch.optim.Adam(
+    filter(lambda p: p.requires_grad, scene_pipeline.parameters()),
+    lr=1e-5, weight_decay=1e-5
+)
+
+Handle class imbalance
+Bump up learning rate of SGD
+
 
