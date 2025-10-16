@@ -27,3 +27,32 @@ scene2emo_network.optimizer = torch.optim.Adam(
 
 Handle class imbalance
 Bump up learning rate of SGD
+
+DONE
+--------------------------------
+Ik train een klein netwerk genaamd Scene2EmotionNet bovenop een groter, voorgeleerd ResNet-model voor sceneherkenning.
+Samen vormen ze de ScenePipeline, die een scènebeeld omzet naar een kansverdeling over 7 emoties.
+In de ScenePipeline gaat het als volgt:
+De invoerafbeelding wordt eerst door het voorgeleerde ResNet gestuurd (zonder de laatste classificatielaag).
+Dit levert een featurevector van 512 waarden op — een compacte samenvatting van de scène.
+Deze 512-dimensionale vector wordt dan doorgegeven aan Scene2EmotionNet,
+dat die vector omzet naar 64 interne waarden (via een verborgen laag)
+en uiteindelijk een softmax-distributie over 7 emoties berekent.
+Parameters van emotion network en pretrained network gefreezed.
+Max aantal faces op 3 gezet
+
+In de dataset heb ik al automatisch alle emoties gemapt naar de 7 basis emoties die horen bij de output van de emotion recognizer
+
+Dan wou ik het trainen efficienter maken door alle tensors al te presaven. Voordien werd tijdens training per sample:
+- de hele image genomen en omgezet naar een tensor met de juiste preprocessing voor het pretrained scene model.
+- De hele image werd ook gebruikt voor de faces waar een facedetector werd op losgelaten, gezicht werd eruitgesneden en omgezet in
+een tensor met de juiste preprocessing voor de emotionrecognizer. De faces werden geordend van groot naar klein. Nu tijdens training 
+hoef ik enkel lokaal mijn tensors in te laden.
+
+Op die manier kunnen trainen met 5000 images. Duurde wel zo'n 8 uren ongeveer. Uiteindelijk over lange periode zie 
+je wel een progressie qua loss en ook de trainable parameters zijn intuitief.
+
+Prolog file: 
+De regel van de train params geeft aan dat het systeem exact 1 van de 4 bronnen kiest. Elke keuze heeft een probabilistische
+kans die tijdens training wordt geleerd --> Kies 1 bron en neem de emotie die dat netwerk voorspelt.
+En tijdens training leert het systeem wanneer het beter is om op een gezicht te vertrouwen en wanneer op de scène.
