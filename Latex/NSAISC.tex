@@ -1,0 +1,285 @@
+\documentclass[12pt]{article}
+
+% Packages
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{lmodern}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{pgfplotstable}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox} 
+\usepackage{adjustbox}
+\usepackage{pdfpages}  
+\usepackage[normalem]{ulem}
+
+\usepackage{amsmath, amssymb, amsthm, bm}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage[T1]{fontenc}
+\usepackage{courier}
+\usepackage{listings}
+
+\includepdfset{pagecommand=\thispagestyle{fancy}}
+\tcbuselibrary{breakable} 
+
+% Header & Footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Master's Thesis -Neurosymbolic AI for Social Cognition}
+\lhead{Jarne Demoen - 0616897}
+\rfoot{\thepage}
+\setlength{\headheight}{14.5pt}
+
+% Title
+\title{Neurosymbolic AI for Social Cognition}
+\author{Jarne Demoen\\
+Vrije Universiteit Brussel}
+\date{18/10/2025}
+
+% Custom subtitle (above main title)
+\pretitle{%
+  \begin{center}
+  \large\textbf{Master's Thesis}\\[1ex]
+}
+\posttitle{\end{center}}
+
+\begin{document}
+\maketitle
+
+\section{Goal and Overview}
+
+We build a \textbf{Mixture-of-Experts (MoE)} model combining four emotion predictors:
+\begin{itemize}[leftmargin=1.2em]
+  \item Three \textbf{face experts}: $e\in\{0,1,2\}$, each outputting $7$ emotion logits $\bm{z}^{(e)}\in\mathbb{R}^{7}$,
+  \item One \textbf{scene expert}: $\bm{z}^{(\text{scn})}\in\mathbb{R}^{7}$.
+\end{itemize}
+
+A learned \textbf{gating network} computes per-image weights $\bm{w}(\bm{x})\in\Delta^{3}$ (the 4-dimensional simplex), and the experts are mixed on the probability level:
+\[
+\bm{p}_{\text{neural}}(\bm{x})
+= \sum_{e\in\{0,1,2,\text{scn}\}} w_e(\bm{x})\;\underbrace{\mathrm{softmax}\!\left(\bm{z}^{(e)}(\bm{x})\right)}_{\bm{p}^{(e)}(\bm{x})}\,.
+\]
+
+This neural mixture is then combined symbolically with domain \textbf{prior knowledge} inside DeepProbLog:
+\[
+p(E\,|\,\bm{x},\text{Meta})
+\;\propto\;
+p_{\text{neural}}(E\,|\,\bm{x})\;\cdot\;p_{\text{prior}}(E\,|\,\text{Meta})\,,
+\]
+which is exactly a \emph{product-of-experts}. The final predicate \texttt{final\_emo/4} corresponds to this product and is the one used for training and inference.
+
+\section{Notation and Shapes}
+For a mini-batch:
+\[
+\begin{aligned}
+&B = \text{batch size}, \quad C = 7 \text{ emotion classes}, \quad F=3 \text{ face slots.}\\
+&\bm{z}_{\text{face}} \in \mathbb{R}^{B\times F\times C},\quad
+\bm{z}_{\text{scn}} \in \mathbb{R}^{B\times C}.\\
+&\bm{p}_{\text{face}}=\mathrm{softmax}(\bm{z}_{\text{face}},-1)\in\mathbb{R}^{B\times F\times C},\quad
+\bm{p}_{\text{scn}}=\mathrm{softmax}(\bm{z}_{\text{scn}},-1)\in\mathbb{R}^{B\times C}.
+\end{aligned}
+\]
+Gating weights: $\bm{w}\in\mathbb{R}^{B\times 4}$ with $\sum_{e} w_{b,e}=1$ and $w_{b,e}\ge 0$.
+
+\section{Gating Inputs (Features)}
+The gate should learn which expert is reliable for each image. We feed it compact indicators of confidence and context.
+
+\subsection*{Per expert (face or scene)}
+\begin{align*}
+m^{(e)} &= \max_{c}\;p^{(e)}_{c} \quad \text{(maximum probability, confidence)}\\
+h^{(e)} &= -\sum_{c}p^{(e)}_{c}\log p^{(e)}_{c} \quad \text{(entropy, uncertainty)}
+\end{align*}
+
+\subsection*{Additional contextual signals}
+\begin{itemize}[leftmargin=1.2em]
+  \item \texttt{face\_present}[e] $\in \{0,1\}$ – whether face slot $e$ exists,
+  \item \texttt{num\_faces} $\in \{0,1,2,3\}$,
+  \item Optionally, detection confidence, blur level, or similar.
+\end{itemize}
+
+The concatenated gate input per image may thus include:
+\[
+\text{gate\_in} = [\bm{z}_{\text{face}}\text{ (flattened)},\; \bm{z}_{\text{scn}},\; \bm{m},\; \bm{h},\; \texttt{face\_present},\; \texttt{num\_faces}],
+\]
+but you can begin with only $(\bm{m},\bm{h},\text{flags})$ for simplicity.
+
+\section{Gating Network and Probability Mixture}
+The gate is a simple MLP producing 4 weights:
+\[
+\bm{w}(\bm{x})=\mathrm{softmax}\!\bigl(f_{\theta}(\text{gate\_features}(\bm{x}))\bigr) \in \mathbb{R}^{4}.
+\]
+
+The neural mixture:
+\[
+\bm{p}_{\text{neural}}(\bm{x}) = \sum_{e\in\{0,1,2,\text{scn}\}} w_e(\bm{x})\,\bm{p}^{(e)}(\bm{x})\,,
+\qquad
+\sum_{e} w_e(\bm{x})=1.
+\]
+
+\paragraph{Implementation sketch (PyTorch).}
+\begin{lstlisting}[language=Python]
+# probabilities per expert
+p_face  = torch.softmax(z_face, dim=-1)   # (B,3,7)
+p_scene = torch.softmax(z_scene, dim=-1)  # (B,7)
+
+# gate features
+max_face  = p_face.max(dim=-1).values
+ent_face  = -(p_face * (p_face.clamp_min(1e-12)).log()).sum(dim=-1)
+max_scene = p_scene.max(dim=-1).values
+ent_scene = -(p_scene * (p_scene.clamp_min(1e-12)).log()).sum(dim=-1)
+
+feat_list = [max_face, ent_face,
+             max_scene.unsqueeze(-1), ent_scene.unsqueeze(-1),
+             face_present.float(), num_faces]
+gate_in = torch.cat([t.reshape(t.size(0), -1) for t in feat_list], dim=1)  # (B,D)
+
+# MLP -> weights
+w = torch.softmax(gate_mlp(gate_in), dim=-1)  # (B,4)
+
+# probability mixture
+p_mix = (
+  (w[:,0].unsqueeze(-1).unsqueeze(-1) * p_face[:,0]) +
+  (w[:,1].unsqueeze(-1).unsqueeze(-1) * p_face[:,1]) +
+  (w[:,2].unsqueeze(-1).unsqueeze(-1) * p_face[:,2]) +
+  (w[:,3].unsqueeze(-1)             * p_scene)
+)
+\end{lstlisting}
+
+\section{Symbolic Priors in DeepProbLog}
+Symbolic priors encode domain knowledge $p_{\text{prior}}(E\,|\,\text{Meta})$.  
+In ProbLog, conjunction means multiplication of probabilities, so combining a neural predicate with a prior predicate yields a product-of-experts model.
+
+\paragraph{Formally:}
+\[
+p(E\,|\,\bm{x},\text{Meta}) \propto p_{\text{neural}}(E\,|\,\bm{x})\cdot p_{\text{prior}}(E\,|\,\text{Meta}).
+\]
+
+\paragraph{ProbLog Example.}
+\begin{lstlisting}
+% Neural mixture (linked to your PyTorch MoE)
+nn(moe_net, [Faces, Scene], E, [0,1,2,3,4,5,6]) :: neural_emo(Faces, Scene, E).
+
+% Metadata facts (per example):
+% num_faces(MetaId, N).   scene_tag(MetaId, Tag).
+% Example:
+%   num_faces(meta123, 0).
+%   scene_tag(meta123, party).
+
+% Soft baseline prior (every class gets some mass)
+0.20::prior_emo(_, 0). 0.20::prior_emo(_, 1). 0.20::prior_emo(_, 2).
+0.20::prior_emo(_, 3). 0.20::prior_emo(_, 4). 0.20::prior_emo(_, 5).
+0.20::prior_emo(_, 6).
+
+% Rules:
+0.10::prior_emo(M, 0) :- num_faces(M, 0).  % damp anger if no faces
+0.10::prior_emo(M, 1) :- num_faces(M, 0).  % damp disgust
+0.10::prior_emo(M, 5) :- num_faces(M, 0).  % damp surprise
+
+0.60::prior_emo(M, 3) :- scene_tag(M, party). % boost happy
+0.15::prior_emo(M, 4) :- scene_tag(M, party). % damp sad
+
+% Combine neural and prior via conjunction (product of probs):
+final_emo(Faces, Scene, Meta, E) :-
+    neural_emo(Faces, Scene, E),
+    prior_emo(Meta, E).
+\end{lstlisting}
+
+\paragraph{Training:} Train and query \texttt{final\_emo/4}, not \texttt{neural\_emo/3}.
+
+\section{Training Objective}
+DeepProbLog optimizes the negative log-likelihood of the final query:
+\[
+\mathcal{L} = - \log p\bigl(E^{\star}\,\big|\,\bm{x},\text{Meta}\bigr),
+\]
+where $p$ is the probability returned by the probabilistic reasoning engine for \texttt{final\_emo}.
+
+\paragraph{Implementation steps.}
+\begin{enumerate}[leftmargin=1.2em]
+  \item Build the PyTorch MoE (experts $\to$ logits, gate $\to \bm{w}$, mix $\to \bm{p}_{\text{neural}}$).
+  \item Link \texttt{moe\_net} to DeepProbLog via \texttt{nn(...)} predicate.
+  \item Add metadata facts: \texttt{num\_faces/2}, \texttt{scene\_tag/2}, etc.
+  \item Define symbolic \texttt{prior\_emo/2}.
+  \item Train using \texttt{final\_emo(Faces, Scene, Meta, E\_gold)} queries.
+\end{enumerate}
+
+\section{Worked Example}
+Suppose (for one image):
+\begin{itemize}
+  \item $\bm{p}^{(0)}=[.30,.05,.05,.30,.10,.10,.10]$,
+  \item $\bm{p}^{(1)}=[.25,.05,.05,.35,.10,.10,.10]$,
+  \item $\bm{p}^{(2)}=[.10,.10,.10,.50,.05,.10,.05]$,
+  \item $\bm{p}^{(\text{scn})}=[.05,.05,.10,.45,.15,.10,.10]$,
+  \item $\bm{w}=[0.2,0.2,0.2,0.4]$.
+\end{itemize}
+Then
+\[
+\bm{p}_{\text{neural}}
+= 0.2\bm{p}^{(0)}+0.2\bm{p}^{(1)}+0.2\bm{p}^{(2)}+0.4\bm{p}^{(\text{scn})}.
+\]
+If metadata indicates \texttt{num\_faces=0} and \texttt{scene\_tag=party},
+the symbolic priors amplify \texttt{happy} and damp \texttt{sad/anger/disgust/surprise}.
+The final DeepProbLog inference multiplies and renormalizes, shifting probability mass towards \texttt{happy} in an explainable way.
+
+\section{Practical Stability Tips}
+\begin{itemize}[leftmargin=1.2em]
+  \item Clamp in logs: use \texttt{clamp\_min(1e-12)} for numerical stability.
+  \item Normalize gating inputs: entropies $\in[0,\log C]$.
+  \item If a face slot is empty: \texttt{face\_present=0}, feed a flat or neutral distribution.
+  \item Use small gate MLP (1–2 layers, 64 hidden) with weight decay to avoid overfitting.
+\end{itemize}
+
+\section{Interface Summary}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Neural side:} \texttt{nn(moe\_net,[Faces,Scene],E,[0..6])} returns $\bm{p}_{\text{neural}}$.
+  \item \textbf{Data:} 
+    \begin{itemize}
+      \item \texttt{Faces}: tensor source with 3 face crops or features.
+      \item \texttt{Scene}: scene image tensor.
+      \item \texttt{Meta}: symbolic facts per example.
+    \end{itemize}
+\end{itemize}
+
+\section{Implement Now vs Later}
+\subsection*{Implement Now (core system)}
+\begin{enumerate}[leftmargin=1.2em]
+  \item Experts $\to$ logits $\to$ \texttt{softmax} $\to$ per-expert $\bm{p}^{(e)}$.
+  \item Gate MLP with \textbf{max-prob}, \textbf{entropy}, \textbf{face\_present}, \textbf{num\_faces}.
+  \item Probability mixture $\bm{p}_{\text{neural}}=\sum_e w_e \bm{p}^{(e)}$.
+  \item Symbolic priors (\texttt{prior\_emo}) and training on \texttt{final\_emo}.
+\end{enumerate}
+
+\subsection*{Add Later (extensions)}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Temperature calibration} per expert: learn $\tau_e$ so that
+    $\bm{p}^{(e)}=\mathrm{softmax}(\bm{z}^{(e)}/\tau_e)$.
+  \item \textbf{Agreement features:} Jensen-Shannon or KL divergence between experts.
+  \item \textbf{Logit mixture (log-sum-exp):}
+  \[
+  \bm{z}_{\text{mix}} = \log\!\Big(\sum_{e} w_e\,e^{\bm{z}^{(e)}}\Big),\quad
+  \bm{p}_{\text{neural}}=\mathrm{softmax}(\bm{z}_{\text{mix}}).
+  \]
+  \item Richer priors (object tags, time, context) and symbolic features for the gate.
+\end{itemize}
+
+\section{Checklist}
+\begin{enumerate}[leftmargin=1.2em]
+  \item Gate outputs 4 weights per sample (softmax-normalized).
+  \item Shape consistency: $(B,3,7)$, $(B,7)$ $\rightarrow$ $(B,7)$.
+  \item Priors are soft (no hard zeros).
+  \item Train and query \texttt{final\_emo/4}.
+  \item Log which symbolic rules fired for explainability.
+\end{enumerate}
+
+\end{document}

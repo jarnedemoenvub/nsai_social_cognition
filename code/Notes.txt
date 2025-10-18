@@ -4,55 +4,12 @@ overzichtspapers nsai
 gelezen papers overzicht maken
 
 Enkel prolog param veranderen, wat doet de training met mijn netwerk? Wat is er veranderd?
-Welke param nu echt trainen?
-problog --> hoe kan je die trainen? Zo kan je enkel prolog params trainen en niet het neuraal netwerk.
 Nieuwe onderzoeksvraag --> welke is interessanter, samen trainen of niet?
 
----------------------------
-Cache relies on row index of the shuffled and split Dataframes, so make sure the tensors are saved after shuffling, so check if the tensors match!
+welk soort fouten, wat heeft het leren opgebracht?
+Miischien heel resnet gebruiken en een layer toevoegen van 365 -> 7 waarden.
+Netwerken eens dubbelchecken
+--> Uitzoeken waarom mijn hele project deze resultaten heeft. Waar hij altijd fouten maakt. Maak analyse en die kunnen tot nieuwe inzichten
+leiden en mij in een nieuwe richting sturen om mijn project beter te maken.
 
-check if all tensors are actually retrieved without errors, if I would've had dummy values everytime, then the training is random.
 
-To Try:
------------------------------
-Unfreeze a tiny slice of the scene backbone:
-for p in scene_pipeline.backbone[:-1].parameters():  # keep most frozen
-    p.requires_grad = False
-for p in scene_pipeline.backbone[-1].parameters():   # unfreeze last block
-    p.requires_grad = True
-scene2emo_network.optimizer = torch.optim.Adam(
-    filter(lambda p: p.requires_grad, scene_pipeline.parameters()),
-    lr=1e-5, weight_decay=1e-5
-)
-
-Handle class imbalance
-Bump up learning rate of SGD
-
-DONE
---------------------------------
-Ik train een klein netwerk genaamd Scene2EmotionNet bovenop een groter, voorgeleerd ResNet-model voor sceneherkenning.
-Samen vormen ze de ScenePipeline, die een scènebeeld omzet naar een kansverdeling over 7 emoties.
-In de ScenePipeline gaat het als volgt:
-De invoerafbeelding wordt eerst door het voorgeleerde ResNet gestuurd (zonder de laatste classificatielaag).
-Dit levert een featurevector van 512 waarden op — een compacte samenvatting van de scène.
-Deze 512-dimensionale vector wordt dan doorgegeven aan Scene2EmotionNet,
-dat die vector omzet naar 64 interne waarden (via een verborgen laag)
-en uiteindelijk een softmax-distributie over 7 emoties berekent.
-Parameters van emotion network en pretrained network gefreezed.
-Max aantal faces op 3 gezet
-
-In de dataset heb ik al automatisch alle emoties gemapt naar de 7 basis emoties die horen bij de output van de emotion recognizer
-
-Dan wou ik het trainen efficienter maken door alle tensors al te presaven. Voordien werd tijdens training per sample:
-- de hele image genomen en omgezet naar een tensor met de juiste preprocessing voor het pretrained scene model.
-- De hele image werd ook gebruikt voor de faces waar een facedetector werd op losgelaten, gezicht werd eruitgesneden en omgezet in
-een tensor met de juiste preprocessing voor de emotionrecognizer. De faces werden geordend van groot naar klein. Nu tijdens training 
-hoef ik enkel lokaal mijn tensors in te laden.
-
-Op die manier kunnen trainen met 5000 images. Duurde wel zo'n 8 uren ongeveer. Uiteindelijk over lange periode zie 
-je wel een progressie qua loss en ook de trainable parameters zijn intuitief.
-
-Prolog file: 
-De regel van de train params geeft aan dat het systeem exact 1 van de 4 bronnen kiest. Elke keuze heeft een probabilistische
-kans die tijdens training wordt geleerd --> Kies 1 bron en neem de emotie die dat netwerk voorspelt.
-En tijdens training leert het systeem wanneer het beter is om op een gezicht te vertrouwen en wanneer op de scène.
