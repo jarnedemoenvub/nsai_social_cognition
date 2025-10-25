@@ -6,10 +6,41 @@ gelezen papers overzicht maken
 Enkel prolog param veranderen, wat doet de training met mijn netwerk? Wat is er veranderd?
 Nieuwe onderzoeksvraag --> welke is interessanter, samen trainen of niet?
 
-welk soort fouten, wat heeft het leren opgebracht?
-Miischien heel resnet gebruiken en een layer toevoegen van 365 -> 7 waarden.
-Netwerken eens dubbelchecken
---> Uitzoeken waarom mijn hele project deze resultaten heeft. Waar hij altijd fouten maakt. Maak analyse en die kunnen tot nieuwe inzichten
-leiden en mij in een nieuwe richting sturen om mijn project beter te maken.
+In deze case, DPL nuttig?
+MoE, input: tensors van scene en faces en output 7 emoties --> slechter of beter dan oude problog (met gewichten)
+
+2) Klopt de hypothese dat nu mijn manier met extra informatie (max, entropie...) beter is. Ja of nee zoek uit door neuraal netwerk te maken zodanig dat input gewoon scene en emotie tensor is en fully connected to 7 emotions.
+1) ZEKER DIE HYPOTHESE doen
+3) Terugkeren naar model van vorige week --> wat voor fouten maakt hij, confusion matrix, inspecteren van afbeeldingen?
+4) Zijn er correlaties tussen fouten van oude prolog en de meta informatie die ik heb toegevoegd.
+
+
+Literatuurstudie: sociale cognitie, SOTA sociale cognitie in neurale netwerken (vertrekken vanuit FindingEmopaper), recenter werk??
+- kennis over het probleem die ik wil oplossen , vorige pogingen, kennis over d emethode (neuro symb AI), hoe sit DPL daarbinnen + werking
+- kort over psychologische kant, hoe werkt sociale cognitie in het menselijke brein
+Kan parallel gebeuren met het project.
+
+
+- van plutchik, elk blad heeft een basis emotie. In code zit mapping van 21 naar 7 labels (6 komen er overeen met mijn basisemoties)
+
+Done
+---------------------
+Afgelopen week gefocust op het verbeteren van het model. Probleem vorige week was dat als ik die 
+trainable weights had, dat die uiteindelijk na training fixed bleven en dus niet werden aangepast
+op basis van de afbeelding. Dus idealiter heb ik een afbeelding en bepaalt mijn systeem automatisch
+de weights van de 4 sources (3 gezichten , 1 scene).
+
+- mapping FE naar basic emoties
+- mapping 365 places naar 13 basisplaces (1 op 1 mapping)
+- preprocessing emotie predictions op training set (tensors opgeslaan)
+- zelfde voor scene model maar eerst neuraal netwerk nodig die 365 places mapt naar basis emotie,
+dit gebeurt met scene adapter die 40% accuracy heeft.
+- dataframes voorzien met metadata: faces_present tensor, num_faces en scene tag (met threshold)
+- MoENet (Mix of experts net) input: ingeladen tensors faces en scene die elk distributie geven over de emoties in logits
+dan haal ik nog metadata uit dataframe (faces_present en num_faces).
+    - berekenen softmax over faces en scene
+    - faces worden gemaskeerd op basis van faces_present (zeroed out)
+    - max en entropie van faces en scene (low entropy is high confidence)
+    - weighted sum maken om een finale distributie te bekomen over de basisemoties
 
 
