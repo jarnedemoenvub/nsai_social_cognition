@@ -1,0 +1,86 @@
+===============================
+DATASETS
+===============================
+- CAER-S and HECO: scene-based datasets but with smaller scale and narrower annotation schemes.
+- AffectNet (Mollahosseini et al. 2019): large-scale facial emotion dataset with Valence/Arousal.
+- COPA (Roemmele et al. 2011): commonsense causal reasoning benchmark.
+- CLEVR dataset (Johnson et al., 2017): diagnostic benchmark for visual reasoning.
+- ATOMIC
+
+===============================
+NEUROSYMBOLIC FRAMEWORKS
+===============================
+- Explanatory Rule Learning (Evans & Grefenstette, 2018): symbolic rule learning from noisy data.
+- DeepProblog: 
+
+===============================
+RELATED AI METHODS / MODELS
+===============================
+- Markov Logic Networks (Richardson & Domingos, 2006): probabilistic logic framework.
+- Hybrid MLNs (Wang & Domingos, 2008): extensions of MLNs with continuous features.
+- Bayesian Logic (BLOG, Milch et al., 2005): open-domain probabilistic logic.
+- Socher et al. (2013): Neural Tensor Networks for knowledge base completion.
+- Rocktäschel et al. (2015): injecting logical knowledge into embeddings.
+- Semantic/Logic-as-Loss (Xu et al. 2018): encode FOL constraints as differentiable losses.
+- Diligenti et al. (2012): bridging logic and kernel machines.
+- Bottou (2011): From machine learning to machine reasoning.
+- Valiant (1999): Robust Logics.
+- d’Avila Garcez, Lamb, Gabbay (2009): Neural-Symbolic Cognitive Reasoning.
+
+===============================
+PSYCHOLOGY & COGNITIVE SCIENCE FOUNDATIONS
+===============================
+- Kahneman (2011): System 1 & 2 Thinking.
+- Kumfor et al. (2018): context and emotion processing in frontotemporal dementia.
+
+===============================
+EXPLAINABILITY & KNOWLEDGE EXTRACTION
+===============================
+- Symbolic rule extraction from neural networks (d’Avila Garcez et al.).
+- Counterfactual explanations (White & d’Avila Garcez 2019).
+- Use of knowledge graphs with neural modules (Carvalho et al. 2022).
+- Weighted Boolean Formulas / Knowledge Compilation (Fierens et al. 2015; Darwiche 2011).
+- aProbLog & Gradient Semiring (Kimmig et al. 2011).
+
+===============================
+VISION & MULTIMODAL BASELINES
+===============================
+- EmoNet (Kragel et al. 2019): CNN baseline for visual emotion.
+- CLIP (Radford et al. 2021): multimodal embeddings.
+- GPT-4 Technical Report (OpenAI, 2024): multimodal integration.
+- MAC network (Hudson & Manning, 2018): attention-based reasoning baseline.
+- TbD-Nets (Mascharka et al., 2018): interpretable attention reasoning network.
+- Andreas et al. (2016): Modular Networks.
+
+===============================
+NEUROSCIENCE & ALIGNMENT STUDIES
+===============================
+- Kragel et al. (2019): Emotion schemas in visual cortex.
+- Abdel-Ghaffar et al. (2024): occipito-temporal tuning to semantic/affective features.
+- Horikawa et al. (2020): neural representation of visually evoked emotion.
+- Malik & Isik (2022): graph neural networks for social interaction recognition.
+- Kaniuth & Hebart (2022): feature-reweighted RSA linking AI, brains, and behavior.
+- Gokce & Schrimpf (2024): scaling laws of behavior vs. brain alignment.
+
+===============================
+VIDEO DEEPPROBLOG: https://www.youtube.com/watch?v=b-AC428qhdQ
+===============================
+
+Encoding logic in the weights of neural networks
+- Logic Tensor Networks (Serafini et al.)
+- A Semantic Loss Function for Deep Learning with Symbolic Knowledge (Xu et al.)
+- Ontology Reasoning with Deep Neural Networks (Hohenecker et al.)
+- Semantic Based Regularization (Diligenti et al.)
+- ...
+
+Templating neural networks
+- Lifted Relational Neural Networks (Šourek et al.)
+- Neural Theorem Prover (Rocktäschel et al.)
+- Neural Module Networks (Andreas et al.)
+- ...
+
+Differentiable neural computers / program interpreters
+- Differentiable Neural Computer (Graves et al.)
+- Neural Programmer-Interpreters (Reed et al.)
+- Differentiable Forth Interpreter (Bošnjak et al.)
+- ...

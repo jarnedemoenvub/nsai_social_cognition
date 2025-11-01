@@ -15,7 +15,7 @@ MoE, input: tensors van scene en faces en output 7 emoties --> slechter of beter
 4) Zijn er correlaties tussen fouten van oude prolog en de meta informatie die ik heb toegevoegd.
 
 Literatuurstudie: sociale cognitie, SOTA sociale cognitie in neurale netwerken (vertrekken vanuit FindingEmopaper), recenter werk??
-- kennis over het probleem die ik wil oplossen , vorige pogingen, kennis over d emethode (neuro symb AI), hoe sit DPL daarbinnen + werking
+- kennis over het probleem die ik wil oplossen , vorige pogingen, kennis over de methode (neuro symb AI), hoe sit DPL daarbinnen + werking
 - kort over psychologische kant, hoe werkt sociale cognitie in het menselijke brein
 Kan parallel gebeuren met het project.
 
