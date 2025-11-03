@@ -1,7 +1,10 @@
 0.2::earthquake.
 0.1::burglary.
-0.5::mary_hears_alarm.
+
+0.5::hears_alarm(mary).
+0.4::hears_alarm(john).
 
 alarm :- earthquake.
 alarm :- burglary.
-calls_mary :- alarm, mary_hears_alarm.
+
+calls(X):- alarm, hears_alarm(X).

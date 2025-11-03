@@ -1,6 +1,5 @@
 \documentclass[12pt]{article}
 
-% Packages
 \usepackage[a4paper, margin=2.5cm]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath, amsthm}
@@ -24,11 +23,15 @@
 \usepackage{adjustbox}
 \usepackage{pdfpages}  
 \usepackage[normalem]{ulem}
+ \usepackage{amsmath,amssymb}
+ \usepackage{tcolorbox}
+ \newtcolorbox{definitionbox}[1][]{colback=gray!10!white,colframe=black,title=Definition,#1}
+ \usepackage{listings}
+ \lstset{basicstyle=\ttfamily\small,frame=single,columns=fullflexible}
 
 \includepdfset{pagecommand=\thispagestyle{fancy}}
 \tcbuselibrary{breakable} 
 
-% Header & Footer
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{Neurosymbolic AI for Social Cognition - Literature Study}
@@ -36,13 +39,11 @@
 \rfoot{\thepage}
 \setlength{\headheight}{14.5pt}
 
-% Title
 \title{Neurosymbolic AI for Social Cognition - Literature Study}
 \author{Jarne Demoen\\
 Vrije Universiteit Brussel}
-\date{29/10/2025}
+\date{4/11/2025}
 
-% Custom subtitle (above main title)
 \pretitle{%
   \begin{center}
   \large\textbf{Master's Thesis}\\[1ex]
@@ -51,76 +52,152 @@ Vrije Universiteit Brussel}
 
 \begin{document}
 \maketitle
+
 \section{Neurosymbolic AI for Social Cognition}
-This thesis aims to combine neural and symbolic AI to improve how computers understand the term "social cognition". Social cognition is the way humans interpret others' emotions, intentions, and social situations.
+
+This thesis explores how neurosymbolic AI can enhance machines’ understanding of \emph{social cognition}. Social cognition is the human ability to interpret emotions, intentions, and social situations. Most traditional emotion recognition methods focus only on detecting patterns, but understanding emotions in a more human-like way requires considering the surrounding context and being able to explain the reasoning behind the recognition.
 
 \begin{itemize}
-	\item{\textbf{Symbolic AI} uses explicit rules such as "people are happy at weddings"}
-	\item{\textbf{Subsymbolic AI (deep learning)} uses pattern recognition from raw data (facial expression in images)}
-	\item{\textbf{Neurosymbolic AI} merges both terms such that neural networks can extract features while logic modules can reason over structured knowledge}
+    \item \textbf{Symbolic AI} uses explicit, human-readable rules such as “people are happy at weddings.”
+    \item \textbf{Subsymbolic AI} (deep learning) learns patterns directly from data, for example, recognizing facial expressions in images.
+    \item \textbf{Neurosymbolic AI} brings together the strengths of both worlds: neural networks handle raw sensory data like images or speech, while symbolic reasoning modules make sense of structured relationships and logical rules.
 \end{itemize}
 
-The research should determine whether symbolic knowledge improves recognition or reduces the need for more data when aiming for better performance. Additionally, it would also be interesting to find out whether the integration of symbolic knowledge enhances interpretability. I will mainly be using the FindingEmo dataset.
+The goal of this research is to determine whether incorporating symbolic knowledge can (i) improve emotion recognition performance, (ii) reduce data requirements, and (iii) increase interpretability. Experiments will be performed on the \emph{FindingEmo} dataset, which focuses on natural social scenes involving multiple people.
 
-\section{A Circumplex Model of Affect --- James A. Russell}
+\section{A Circumplex Model of Affect — James A. Russell}
 
-Russell’s paper presents a psychological model of human emotions called the \textit{Circumplex Model of Affect}, which proposes that emotions can be organized within a two-dimensional continuous space. Affect is the broadest and most general word psychologists use for how people feel emotionally or even physically. The continuous space consists of two axes:
+Russell’s \textit{Circumplex Model of Affect} provides a psychological foundation for modeling human emotions. It organizes emotions in a continuous two-dimensional space with the following axes:
 
 \begin{itemize}
-    \item \textbf{Valence (Pleasure–Displeasure axis)}: how positive or negative a feeling is.
-    \item \textbf{Arousal (Activation–Deactivation axis)}: how energized or calm the feeling is.
+    \item \textbf{Valence} (Pleasure–Displeasure): how positive or negative an emotion is.
+    \item \textbf{Arousal} (Activation–Deactivation): how energetic or calm it feels.
 \end{itemize}
-
-Together, these dimensions form a circular structure (\textit{circumplex}) where emotions gradually blend into one another across valence and arousal, the same way as colors on a wheel. This circular arrangement provides a structured, interpretable framework for representing affect. In the context of neurosymbolic AI, it enables \textbf{symbolic encoding of affective knowledge} (\textit{anger} = unpleasant + high arousal) that can interact with neural perception modules, thus bridging psychological theory with AI reasoning.
-
-\vspace{1em}
-\noindent
-In Schlosberg’s early studies, participants categorized facial expressions of emotion. Errors in these categorizations revealed that similar emotions were frequently confused, indicating that they were \textbf{conceptually close}. From these confusion patterns, Schlosberg proposed a circular representation based on two bipolar dimensions:
-\begin{itemize}
-    \item Pleasantness–Unpleasantness
-    \item Attention–Rejection (or Activation–Deactivation)
-\end{itemize}
-Emotions, therefore, are better understood as positions along \textbf{continuous bipolar scales} rather than discrete, isolated categories. If one feels happy, one cannot simultaneously feel sad; if one feels tense, one cannot feel relaxed. Russell extended this reasoning, showing that any emotion word can be represented as a specific blend of valence and arousal, producing a full circle of affective experience.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{Media/affect8circle.png}
+    \includegraphics[width=0.6\textwidth]{Media/affect8circle.png}
+    \caption{Eight affect concepts in a circular order}
 \end{figure}
 
-\vspace{1em}
-\noindent
-Russell’s experiment involved participants judging the relationships among the 28 emotion words. These served as the “points” later positioned within affective space using three techniques:
-\begin{itemize}
-    \item \textbf{Ross' circular ordering:} Arranges variables along a circle, assuming circularity from the start.
-    \item \textbf{Multidimensional scaling (MDS):} Derives spatial relationships purely from perceived similarity, without assuming circularity.
-    \item \textbf{Unidimensional scaling:} Rates each term separately on pleasure–displeasure and arousal dimensions, producing two coordinates per emotion.
-\end{itemize}
+Each emotion corresponds to a point on this circle, where emotions gradually blend rather than forming sharp boundaries. Happiness, excitement, and contentment occupy nearby positions, while opposite emotions like depression and excitement lie about 180° apart.  
 
-All three approaches yielded \textbf{remarkably consistent results}. Participants did not treat emotions as independent categories. Instead, emotion words such as \textit{happy}, \textit{excited}, and \textit{content} had overlapping meanings, a property Russell called \textbf{fuzziness}. This fuzziness explains why affective terms distribute smoothly around a circle: emotions gradually blend into one another rather than having sharp boundaries. Participants’ high consistency in word placement confirmed that people share a similar \textbf{mental map of emotions} structured around the valence and arousal dimensions.
+Russell’s findings demonstrated that people share a consistent “mental map” of emotions structured along these dimensions. Both people’s reported feelings and their judgments about emotion-related words followed the same circular pattern, suggesting that how we *feel* emotions and how we *think about* them share the same underlying structure.
+
+
+\subsection{Relevance to Neurosymbolic AI.}
+This continuous, interpretable model provides a symbolic foundation for affective reasoning. Neural components can predict perceptual cues such as faces, postures and scenes, while the symbolic layer represents these within the valence–arousal framework, allowing the system to reason about emotions the way humans do (e.g., \texttt{anger = unpleasant + high arousal}).
+
+\section{FindingEmo: An Image Dataset for Emotion Recognition in the Wild (Mertens et al., 2024)}
+
+\subsection{Overview and Motivation}
+
+\textit{FindingEmo} is a dataset designed for emotion recognition in complex, real-world social scenes rather than isolated faces. Each image contains multiple people engaged in social contexts such as weddings, protests, or family gatherings. Labels include both continuous (Valence, Arousal) and discrete emotion categories based on Plutchik’s Wheel of Emotions.
+
+This dataset represents a more realistic view of emotion understanding as a \emph{context-dependent} process: tears at a wedding indicate joy, while tears at a funeral imply sadness. Recognizing emotions, therefore, requires reasoning about context and relationships, which are the key aspects of social cognition.
+
+\subsection{Annotation Methodology and Challenges}
+
+Annotations combine the Circumplex Model of Affect (for Valence and Arousal) and Plutchik’s emotion categories (for discrete labels). a model that organizes human emotions into a circular structure. It contains 24 primary emotions grouped into eight families, each with three levels of intensity varying from mild to strong. Emotions that are psychological opposites, such as joy and sadness, are placed on opposite sides of the wheel. This structure makes it possible to label emotions at different levels of detail, using either the broader eight categories (Emo8) or all 24 specific emotions (Emo24).
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{Media/affect28circle.png}
+    \includegraphics[width=0.7\textwidth]{Media/plutchik.png}
+    \caption{Plutchik's Wheel of Emotions (PWoE)}
 \end{figure}
 
-\noindent
-Russell’s results supported three major hypotheses about the cognitive structure of affect:
+ Reliability studies show stronger agreement on Valence than Arousal, confirming that emotional intensity is more subjective. Such variability is valuable for neurosymbolic approaches, as probabilistic reasoning can explicitly handle uncertainty in human perception.
+
+The dataset exhibits moderate class imbalance: joy and anticipation are frequent, while disgust and surprise are rare. Symbolic priors could compensate for this. For instance, disgust is likely in scenes involving unpleasant stimuli (spoiled food or injury), and fear often appears in threatening contexts (danger, darkness, aggressive postures). By integrating such rules into the reasoning process, the symbolic component could guide or adjust the neural predictions, improving recognition of these low-frequency emotions even when few training examples exist.
+
+\subsection{Baseline Performance and Insights}
+
+Transfer learning on CNNs (VGG16, ResNet) and transformers (CLIP, DINOv2) showed that Valence prediction is more reliable than Arousal. Errors frequently occurred between semantically similar emotions such as anger–disgust and joy–trust. This pattern supports the idea that symbolic reasoning could encode adjacency relationships from Plutchik’s wheel to refine neural predictions.
+
+Combining facial and contextual features through late fusion yielded only minor gains, revealing that simple feature concatenation does not produce real reasoning. A neurosymbolic system could instead use logical rules to integrate these cues transparently, such as:
+\[
+\texttt{wedding\_scene + smiling\_faces → joy.}
+\]
+
+\subsection{Relevance to the Thesis.}
+FindingEmo provides both the perceptual complexity and the affective structure needed to test neurosymbolic models. Neural networks handle visual interpretation, while symbolic logic connects context, emotion, and social conventions, enabling the model to move toward a human-like understanding of collective emotion.
+
+\section{DeepProbLog: Neural Probabilistic Logic Programming (Manhaeve et al.)}
+
+\subsection{Core Concept}
+
+\textit{DeepProbLog} integrates neural networks into the probabilistic logic programming framework \textit{ProbLog}, enabling joint learning of perception and reasoning. In ProbLog, each fact \(p :: f\) has an associated probability. DeepProbLog extends this by allowing some probabilities to come from neural networks, known as \emph{neural predicates}.  
+For example, a CNN detecting whether an image shows a cat with confidence \(0.9\) produces the fact \texttt{0.9::cat(image1).} 
+The system thus combines:
 \begin{itemize}
-    \item \textbf{Bipolarity:} Opposite emotions (e.g., happiness–sadness) occur approximately 180° apart.
-    \item \textbf{Two interpretable dimensions:} The horizontal and vertical axes correspond to pleasure–displeasure and arousal–sleepiness.
-    \item \textbf{Continuity:} Rather than forming distinct clusters, emotion words spread continuously around the circle, creating a smooth emotional spectrum.
+    \item Symbolic reasoning (logical rules and probabilistic inference)
+    \item Neural perception (data-driven probability estimates)
 \end{itemize}
+while remaining fully differentiable and trainable end-to-end.
 
-Earlier psychological models described emotions as 6–12 independent categories. Russell demonstrated instead that affective experience is \textbf{interconnected and continuous}, characterized by two bipolar dimensions that explain most of the variance in emotional life.
+\subsection{Indirect Learning and Latent Representations}
 
-\bigskip
-\noindent
-\textbf{From feeling to cognition:}  
-Russell compared two types of emotion data: self-reports (how people feel) and judgment data (how people think about emotion terms). Traditionally, self-reports were believed to reveal genuine emotional experience, while judgment data were thought to capture only linguistic or semantic relationships. Yet, both data types yielded the same circular structure. This finding implies that \textbf{the way people experience emotions and the way they conceptualize them share the same underlying mental framework}.
+DeepProbLog supports learning from indirect supervision. In the MNIST addition task, the program encodes:
+\begin{lstlisting}[language=Prolog]
+addition(X,Y,Z) :- digit(X,DX), digit(Y,DY), Z is DX + DY.
+\end{lstlisting}
+The network is never told the digit labels but learns to represent them correctly so that the logical rule produces the right sum. The logic provides structure; the neural module learns the perceptual mapping that satisfies it. This mechanism of \emph{weak supervision} is particularly relevant to social cognition, where understanding an emotion or social situation often depends on several subtle interacting cues rather than a single, clearly defined label.
 
-\medskip
-\noindent
-Emotions are therefore not raw sensations; they are \textbf{interpreted experiences}.
-From a neurosymbolic perspective, this implies that the \textbf{symbolic layer of an AI system} can use this cognitive map as a structured knowledge base for affective reasoning. Neural networks may handle perception (detecting facial or scene context cues), while the symbolic layer interprets these signals within the valence–arousal framework, mirroring how humans conceptualize affect.
+\subsection{Annotated and Neural Annotated Disjunctions}
+
+An \textbf{Annotated Disjunction (AD)} encodes probabilistic choices among mutually exclusive outcomes:
+\[
+0.4::earthquake(none);\;0.4::earthquake(mild);\;0.2::earthquake(severe).
+\]
+
+DeepProbLog extends annotated disjunctions to \textbf{Neural Annotated Disjunctions (nADs)}, 
+in which the probabilities of the alternative outcomes are provided by a neural network 
+rather than being fixed values. 
+Each nAD connects the continuous, data-driven predictions of a neural model 
+with the discrete reasoning structure of the logic program. 
+
+In the MNIST experiment, for example, a neural network \( m_{\text{digit}} \) 
+takes an image as input and outputs a probability distribution over the digits 0--9:
+\begin{lstlisting}[language=Prolog]
+nn(m_digit, Img, [0..9]) :: digit(Img,0); ... ; digit(Img,9).
+\end{lstlisting}
+
+Here, each network output corresponds to a probabilistic fact such as 
+\texttt{digit(Img,3)} with probability \( p_3 \). 
+The logic engine then treats these probabilities like any other probabilistic facts, allowing the system to reason symbolically while naturally accounting for the uncertainty that comes from neural perception.
+
+\subsection{Learning and Differentiability}
+
+To train the hybrid system, DeepProbLog employs \textit{Algebraic ProbLog (aProbLog)} with the \emph{gradient semiring}. Each probabilistic fact carries both its probability and the derivative of that probability with respect to learnable parameters. During inference, these are propagated through the Sentential Decision Diagram (SDD).
+This allows gradients from the final loss to flow backward through both the logic and neural layers, enabling standard gradient descent optimization.
+
+\subsection{Application to Social Cognition}
+
+In this thesis, DeepProbLog will serve as the reasoning backbone for modeling social emotions. Neural components perform scene classification and facial emotion recognition:
+\begin{lstlisting}[language=Prolog]
+nn(scene_net, Img, [wedding, funeral, meeting]) ::
+    scene(Img,wedding); scene(Img,funeral); scene(Img,meeting).
+
+nn(emotion_net, Face, [happy, sad, neutral]) ::
+    emotion(Face,happy); emotion(Face,sad); emotion(Face,neutral).
+\end{lstlisting}
+
+Logical rules combine these predictions into scene-level emotional reasoning:
+\begin{lstlisting}[language=Prolog]
+positive_valence(Img) :-
+    scene(Img,wedding), face_in(Face,Img), emotion(Face,happy).
+
+negative_valence(Img) :-
+    scene(Img,funeral), face_in(Face,Img), emotion(Face,sad).
+\end{lstlisting}
+The system is trained on high-level labels such as \texttt{final\_valence(Img, V)}, where \(V \in \{\text{positive}, \text{neutral}, \text{negative}\}\).  
+Gradients propagate from this final target through the reasoning structure to refine both the neural and probabilistic components.
+
+\subsection{Advantages for the Thesis}
+\begin{itemize}
+    \item Provides an interpretable bridge between neural perception and symbolic reasoning.
+    \item Enables learning from indirect supervision (weakly labeled social scenes).
+    \item Supports probabilistic reasoning under uncertainty (essential for human emotion interpretation).
+\end{itemize}
 
 \end{document}

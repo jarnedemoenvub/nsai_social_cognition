@@ -1,10 +1,10 @@
 nn(face_model, [Face], Emotion, [anger, disgust, fear, joy, sadness, surprise]):: face_emotion(Face, Emotion).
 
 nn(scene_model, [Image], Context, 
-    ['aquatic_environment', 'cold_environment', 'cultural_space', 'indoor_commercial', 
-    'indoor_institutional', 'indoor_residential', 'industrial_facility', 'natural_landscape', 
-    'religious_or_historical_site', 'rural_or_recreational_area', 'sports_and_entertainment', 
-    'transport_infrastructure', 'urban_outdoor']):: scene(Image, Context).
+    [aquatic_environment, cold_environment, cultural_space, indoor_commercial, 
+    indoor_institutional, indoor_residential, industrial_facility, natural_landscape, 
+    religious_or_historical_site, rural_or_recreational_area, sports_and_entertainment, 
+    transport_infrastructure, urban_outdoor]):: scene(Image, Context).
 
 % Learnable gate (mixture over sources). Parameters t(_) are learned end-to-end.
 t(_)::use_source(face_0); t(_)::use_source(face_1); t(_)::use_source(face_2); t(_)::use_source(scene).
@@ -24,7 +24,7 @@ face_vote(Faces, Emotion) :-
 face_vote(Faces, Emotion) :-
     face_emotion2(Faces, Emotion).
 
-% Minimal fallback prior so scene path is never blocking (can be replaced by your learned priors)
+% Minimal fallback prior so scene path is never blocking
 0.01::base_prior(anger).
 0.01::base_prior(disgust).
 0.01::base_prior(fear).
