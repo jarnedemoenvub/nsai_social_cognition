@@ -32,5 +32,8 @@ er is betere supervisie nodig. Places zit over het algemeen wel beter.
 - Neural predicate for body language?
 - Zeker interessant om te vergelijken: puur neuraal, neuraal + priors, neuraal + logic rules
 
+- scallop aanpak proberen
+- wat alser minderdan 3 gez zijn
+
 
 

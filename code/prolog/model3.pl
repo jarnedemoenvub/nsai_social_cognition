@@ -17,13 +17,6 @@ face_emotion2([_, _, Face_2], Emotion) :- face_emotion(Face_2, Emotion).
 scene_context(Image, Context):-
     scene(Image, Context).
 
-face_vote(Faces, Emotion) :-
-    face_emotion0(Faces, Emotion).
-face_vote(Faces, Emotion) :-
-    face_emotion1(Faces, Emotion).
-face_vote(Faces, Emotion) :-
-    face_emotion2(Faces, Emotion).
-
 % Minimal fallback prior so scene path is never blocking
 0.01::base_prior(anger).
 0.01::base_prior(disgust).
