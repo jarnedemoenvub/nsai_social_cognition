@@ -36,4 +36,5 @@ er is betere supervisie nodig. Places zit over het algemeen wel beter.
 - wat alser minderdan 3 gez zijn
 
 
-
+ToDo
+- Class-weighted loss gebruiken voor de crossentropy
