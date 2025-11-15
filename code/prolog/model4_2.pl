@@ -47,102 +47,71 @@ scene_emotion_group(scary, sad).
 scene_emotion_group(industrial, sad).
 scene_emotion_group(depressing, sad).
 
-% all_same_emotion(FaceEmo1, FaceEmo2, FaceEmo3, FinalEmo) --> results in the same emotion as final emotion output
-all_same_emotion(E, E, E, FinalEmo):-
-    face_emotion_group(E, FinalEmo).
+dominant_emotion(OtherEmo, DomEmo, DomEmo, DomEmo, OtherEmo).
+dominant_emotion(DomEmo, OtherEmo, DomEmo, DomEmo, OtherEmo).
+dominant_emotion(DomEmo, DomEmo, OtherEmo, DomEmo, OtherEmo).
+dominant_emotion(E1, E2, E3, all_diff, all_diff):-
+    \+(E1 = E2),
+    \+(E2 = E3),
+    \+(E1 = E3).
 
-all_same_emotion(E, E, FinalEmo):-
-    face_emotion_group(E, FinalEmo).
+% If all faces (and the scene) match emotion, return that emotion
+% aggregate_cues_2(E1, E2, SE, Final)
+aggregate_cues_2(E, E, _, E).
 
-% majority_emotion(FaceEmo1, FaceEmo2, FaceEmo3, DomEmo, OtherEmo)
-dominant_emotion(E1, E2, E1, DomEmo, OtherEmo):-
-    face_emotion_group(E1, DomEmo),
-    face_emotion_group(E2, OtherEmo).
+% Otherwise, it will be decided by the scene
+aggregate_cues_2(_, _, E, E).
 
-dominant_emotion(E1, E1, E2, DomEmo, OtherEmo):-
-    face_emotion_group(E1, DomEmo),
-    face_emotion_group(E2, OtherEmo).
-
-dominant_emotion(E2, E1, E1, DomEmo, OtherEmo):-
-    face_emotion_group(E1, DomEmo),
-    face_emotion_group(E2, OtherEmo).
-
-aggregate_cues_1(FaceEmo1, Context, FinalEmo):-
-    scene_emotion_group(Context, SceneEmo),
-    all_same_emotion(FaceEmo1, SceneEmo, FinalEmo).
-
-% The following context categories have wedding scenes and can never be sad
-aggregate_cues_1(_, agriculture, happy).
-aggregate_cues_1(_, nature, happy).
-aggregate_cues_1(_, royal, happy).
-
-% For other scene categories, it does not matter because when people seem happy, even in less happy places, the overall emotion will be happy
-aggregate_cues_1(FaceEmotion1, _, FaceEmotion1).
+% All 3 faces the same --> output that emotion
+% aggregate_cues_3(E1, E2, E3, SE, Dom, Other, Final)
+aggregate_cues_3(E, E, E, _, _, _, E).
 
 % If the dominant emotion matches the scene emotion, output that emotion
-aggregate_cues_3(DomEmo, _, Context, FinalEmo):-
-    scene_emotion_group(Context, SceneEmotion),
-    all_same_emotion(DomEmo, SceneEmotion, FinalEmo).
+aggregate_cues_3(_, _, _, E, E, _, E).
 
 % If the scene matches the other emotion, output that other emotion
-aggregate_cues_3(_, OtherEmo, Context, FinalEmo):-
-    scene_emotion_group(Context, SceneEmotion),
-    all_same_emotion(OtherEmo, SceneEmotion, FinalEmo).
+aggregate_cues_3(_, _, _, E, _, E, E).
+
+% No dominant emotion (all_diff), output emotion of the scene
+aggregate_cues_3(_, _, _, E, all_diff, all_diff, E).
     
 % If there are no faces detected, only base the emotion on the scene context
-final_emotion([noface, noface, noface], Scene, FinalEmo):-
-    scene_context(Scene, Context),
-    scene_emotion_group(Context, FinalEmo).
+final_emotion_0([], SceneTensor, FinalEmo):-
+    scene_context(SceneTensor, ContextPred),
+    scene_emotion_group(ContextPred, FinalEmo).
 
-test([Face1, noface, noface], _, great).
-
-% Only one face detected
-final_emotion([Face1, noface, noface], Scene, FinalEmo):-
-    Face1 \= noface,
-    face_emotion(Face1, FaceEmo1),
-    scene_context(Scene, Context),
-    aggregate_cues_1(FaceEmo1, Context, FinalEmo).
+% Only one face detected, pick the emotion of that person
+final_emotion_1([FaceTensor1], _, FinalEmo):-
+    face_emotion(FaceTensor1, FaceEmo1Pred),
+    face_emotion_group(FaceEmo1Pred, FinalEmo).
 
 % Two faces detected
-final_emotion([Face1, Face2, noface], _ , FinalEmo):-
-    Face1 \= noface,
-    Face2 \= noface,
-    % If all faces agree on the emotion, the overall emotion will be the emotion of the faces
-    face_emotion(Face1, FaceEmotion1),
-    face_emotion(Face2, FaceEmotion2),
-    all_same_emotion(FaceEmotion1, FaceEmotion2, FinalEmo).
+final_emotion_2([FaceTensor1, FaceTensor2], SceneTensor , FinalEmo):-
+    face_emotion(FaceTensor1, FaceEmo1Pred),
+    face_emotion(FaceTensor2, FaceEmo2Pred),
+    face_emotion_group(FaceEmo1Pred, FaceEmo1),
+    face_emotion_group(FaceEmo2Pred, FaceEmo2),
 
-final_emotion([_, _, noface], Scene, FinalEmo):-
-    % When they do not agree on emotion, the scene context will decide the overall image emotion
-    scene_context(Scene, Context),
-    scene_emotion_group(Context, FinalEmo).
+    scene_context(SceneTensor, ContextPred),
+    scene_emotion_group(ContextPred, SceneEmo),
 
-% Three faces detected 
-% If all three faces have the same emotion, the final emotion will be that emotion regardless of the scene context
-final_emotion([Face1, Face2, Face3], _, FinalEmo):-
-    Face1 \= noface,
-    Face2 \= noface,
-    Face3 \= noface,
-    face_emotion(Face1, FaceEmo1),
-    face_emotion(Face2, FaceEmo2),
-    face_emotion(Face3, FaceEmo3),
-    all_same_emotion(FaceEmo1, FaceEmo2, FaceEmo3, FinalEmo).
+    aggregate_cues_2(FaceEmo1, FaceEmo2, SceneEmo, FinalEmo).
 
-% If there are two emotions of the same class
-final_emotion([Face1, Face2, Face3], Scene, FinalEmo):-
-    Face1 \= noface,
-    Face2 \= noface,
-    Face3 \= noface,
-    % If they do not agree on the emotion, we will get the dominant emotion
-    face_emotion(Face1, FaceEmo1),
-    face_emotion(Face2, FaceEmo2),
-    face_emotion(Face3, FaceEmo3),
+% Three faces detected
+final_emotion_3([FaceTensor1, FaceTensor2, FaceTensor3], SceneTensor, FinalEmo):-
+    face_emotion(FaceTensor1, FaceEmo1Pred),
+    face_emotion(FaceTensor2, FaceEmo2Pred),
+    face_emotion(FaceTensor3, FaceEmo3Pred),
+
+    face_emotion_group(FaceEmo1Pred, FaceEmo1),
+    face_emotion_group(FaceEmo2Pred, FaceEmo2),
+    face_emotion_group(FaceEmo3Pred, FaceEmo3),
+
     dominant_emotion(FaceEmo1, FaceEmo2, FaceEmo3, DomEmo, OtherEmo),
-    scene_context(Scene, Context),
-    aggregate_cues_3(DomEmo, OtherEmo, Context, FinalEmo).
+    scene_context(SceneTensor, ContextPred),
+    scene_emotion_group(ContextPred, SceneEmo),
+    aggregate_cues_3(FaceEmo1, FaceEmo2, FaceEmo3, SceneEmo, DomEmo, OtherEmo, FinalEmo).
 
-% If all the emotions are different, final emotion will be decided by the context
-final_emotion([_, _, _], Scene, FinalEmo):-
-    % If they do not agree on the emotion, we will get the dominant emotion
-    scene_context(Scene, Context),
-    scene_emotion_group(Context, FinalEmo).
+
+
+
