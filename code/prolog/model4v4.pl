@@ -15,9 +15,9 @@ nn(scene_model, [Scene], Context,
 % -------------------------------
 
 % angry  → mostly Anger, some Disgust, tiny bit Fear
-t(0.80) :: face_emotion_group(angry, anger) ; 
-t(0.15) :: face_emotion_group(angry, disgust) ;
-t(0.05) :: face_emotion_group(angry, fear).
+t(_) :: face_emotion_group(angry, anger) ; 
+t(_) :: face_emotion_group(angry, disgust) ;
+t(_) :: face_emotion_group(angry, fear).
 
 % disgust → mostly Disgust, some Anger and Sadness
 0.80 :: face_emotion_group(disgust, disgust) ;
@@ -25,14 +25,14 @@ t(0.05) :: face_emotion_group(angry, fear).
 0.10 :: face_emotion_group(disgust, sadness).
 
 % fear → mostly Fear, some Anticipation, some Surprise
-t(0.75) :: face_emotion_group(fear, fear) ;
-t(0.15) :: face_emotion_group(fear, anticipation) ;
-t(0.10) :: face_emotion_group(fear, surprise).
+t(_) :: face_emotion_group(fear, fear) ;
+t(_) :: face_emotion_group(fear, anticipation) ;
+t(_) :: face_emotion_group(fear, surprise).
 
 % happy → mostly Joy, some Trust, tiny bit Anticipation
-t(0.80) :: face_emotion_group(happy, joy) ;
-t(0.15) :: face_emotion_group(happy, trust) ;
-t(0.05) :: face_emotion_group(happy, anticipation).
+t(_) :: face_emotion_group(happy, joy) ;
+t(_) :: face_emotion_group(happy, trust) ;
+t(_) :: face_emotion_group(happy, anticipation).
 
 % sad → mostly Sadness, some Fear and Disgust
 0.80 :: face_emotion_group(sad, sadness) ;
@@ -70,9 +70,9 @@ t(0.05) :: face_emotion_group(happy, anticipation).
 0.15 :: scene_emotion_group(cultural, anticipation).
 
 % depressing → clearly negative, heavy
-t(0.75) :: scene_emotion_group(depressing, sadness) ;
-t(0.15) :: scene_emotion_group(depressing, fear) ;
-t(0.10) :: scene_emotion_group(depressing, disgust).
+t(_) :: scene_emotion_group(depressing, sadness) ;
+t(_) :: scene_emotion_group(depressing, fear) ;
+t(_) :: scene_emotion_group(depressing, disgust).
 
 % food → tasty, appetitive, social
 0.70 :: scene_emotion_group(food, joy) ;
@@ -90,9 +90,9 @@ t(0.10) :: scene_emotion_group(depressing, disgust).
 0.15 :: scene_emotion_group(house_interior, sadness).
 
 % industrial → harsh, polluted, unfriendly
-0.45 :: scene_emotion_group(industrial, disgust) ;
-0.30 :: scene_emotion_group(industrial, sadness) ;
-0.25 :: scene_emotion_group(industrial, fear).
+t(_) :: scene_emotion_group(industrial, disgust) ;
+t(_) :: scene_emotion_group(industrial, sadness) ;
+t(_) :: scene_emotion_group(industrial, fear).
 
 % nature → positive, calm, open
 0.70 :: scene_emotion_group(nature, joy) ;
@@ -120,9 +120,9 @@ t(0.10) :: scene_emotion_group(depressing, disgust).
 0.10 :: scene_emotion_group(scary, disgust).
 
 % sport → competition, excitement, uncertainty
-t(0.50) :: scene_emotion_group(sport, anticipation) ;
-t(0.30) :: scene_emotion_group(sport, joy) ;
-t(0.20) :: scene_emotion_group(sport, surprise).
+t(_) :: scene_emotion_group(sport, anticipation) ;
+t(_) :: scene_emotion_group(sport, joy) ;
+t(_) :: scene_emotion_group(sport, surprise).
 
 % summer → warm, bright, holiday vibes
 0.70 :: scene_emotion_group(summer, joy) ;
@@ -145,9 +145,9 @@ t(0.20) :: scene_emotion_group(sport, surprise).
 0.15 :: scene_emotion_group(woods, fear).
 
 % work → structured, sometimes stressful / dull
-0.45 :: scene_emotion_group(work, trust) ;
-0.30 :: scene_emotion_group(work, anticipation) ;
-0.25 :: scene_emotion_group(work, sadness).
+t(_) :: scene_emotion_group(work, trust) ;
+t(_) :: scene_emotion_group(work, anticipation) ;
+t(_) :: scene_emotion_group(work, sadness).
 
 
 all_different(E1, E2, E3):-
