@@ -38,3 +38,7 @@ er is betere supervisie nodig. Places zit over het algemeen wel beter.
 
 ToDo
 - Class-weighted loss gebruiken voor de crossentropy
+
+
+
+18/11 --> parameters visualiseren

@@ -1,6 +1,4 @@
-% -------------------------------
-% Neural predicates
-% -------------------------------
+
 nn(face_model, [Face], Emotion,
    [angry, disgust, fear, happy, neutral, sad, surprise]) ::
    face_emotion(Face, Emotion).
@@ -10,141 +8,137 @@ nn(scene_model, [Scene], Context,
     house_interior, industrial, nature, playful, relaxing, royal, scary, sport, 
     summer, transport, urban, woods, work]) :: scene_context(Scene, Context).
 
-% -------------------------------
-% Emotion grouping
-% -------------------------------
-
-% angry  → mostly Anger, some Disgust, tiny bit Fear
+% angry  mostly Anger, some Disgust, tiny bit Fear
 t(_) :: face_emotion_group(angry, anger) ; 
 t(_) :: face_emotion_group(angry, disgust) ;
 t(_) :: face_emotion_group(angry, fear).
 
-% disgust → mostly Disgust, some Anger and Sadness
+% disgust mostly Disgust, some Anger and Sadness
 0.80 :: face_emotion_group(disgust, disgust) ;
 0.10 :: face_emotion_group(disgust, anger) ;
 0.10 :: face_emotion_group(disgust, sadness).
 
-% fear → mostly Fear, some Anticipation, some Surprise
+% fear mostly Fear, some Anticipation, some Surprise
 t(_) :: face_emotion_group(fear, fear) ;
 t(_) :: face_emotion_group(fear, anticipation) ;
 t(_) :: face_emotion_group(fear, surprise).
 
-% happy → mostly Joy, some Trust, tiny bit Anticipation
+% happy mostly Joy, some Trust, tiny bit Anticipation
 t(_) :: face_emotion_group(happy, joy) ;
 t(_) :: face_emotion_group(happy, trust) ;
 t(_) :: face_emotion_group(happy, anticipation).
 
-% sad → mostly Sadness, some Fear and Disgust
+% sad mostly Sadness, some Fear and Disgust
 0.80 :: face_emotion_group(sad, sadness) ;
 0.10 :: face_emotion_group(sad, fear) ;
 0.10 :: face_emotion_group(sad, disgust).
 
-% surprise → mostly Surprise, some Anticipation, some Fear
+% surprise mostly Surprise, some Anticipation, some Fear
 0.70 :: face_emotion_group(surprise, surprise) ;
 0.20 :: face_emotion_group(surprise, anticipation) ;
 0.10 :: face_emotion_group(surprise, fear).
 
-% neutral → calm / baseline: Trust, some Joy, some Sadness
+% neutral calm / baseline: Trust, some Joy, some Sadness
 0.50 :: face_emotion_group(neutral, trust) ;
 0.25 :: face_emotion_group(neutral, joy) ;
 0.25 :: face_emotion_group(neutral, sadness).
 
-% agriculture → calm / positive outdoors
+% agriculture calm / positive outdoors
 0.70 :: scene_emotion_group(agriculture, joy) ;
 0.20 :: scene_emotion_group(agriculture, trust) ;
 0.10 :: scene_emotion_group(agriculture, anticipation).
 
-% cold → lonely / threatening / unpleasant
+% cold lonely / threatening / unpleasant
 0.60 :: scene_emotion_group(cold, sadness) ;
 0.25 :: scene_emotion_group(cold, fear) ;
 0.15 :: scene_emotion_group(cold, disgust).
 
-% commercial → shopping, buzz, forward-looking
+% commercial shopping, buzz, forward-looking
 0.50 :: scene_emotion_group(commercial, anticipation) ;
 0.30 :: scene_emotion_group(commercial, trust) ;
 0.20 :: scene_emotion_group(commercial, joy).
 
-% cultural → museums, events, positive engagement
+% cultural museums, events, positive engagement
 0.60 :: scene_emotion_group(cultural, joy) ;
 0.25 :: scene_emotion_group(cultural, trust) ;
 0.15 :: scene_emotion_group(cultural, anticipation).
 
-% depressing → clearly negative, heavy
+% depressing clearly negative, heavy
 t(_) :: scene_emotion_group(depressing, sadness) ;
 t(_) :: scene_emotion_group(depressing, fear) ;
 t(_) :: scene_emotion_group(depressing, disgust).
 
-% food → tasty, appetitive, social
+% food tasty, appetitive, social
 0.70 :: scene_emotion_group(food, joy) ;
 0.20 :: scene_emotion_group(food, anticipation) ;
 0.10 :: scene_emotion_group(food, trust).
 
-% horeca (hotel/restaurant/café) → social & pleasant
+% horeca (hotel/restaurant/café) social & pleasant
 0.65 :: scene_emotion_group(horeca, joy) ;
 0.20 :: scene_emotion_group(horeca, trust) ;
 0.15 :: scene_emotion_group(horeca, anticipation).
 
-% house interior → home, safety, sometimes melancholy
+% house interior home, safety, sometimes melancholy
 0.55 :: scene_emotion_group(house_interior, trust) ;
 0.30 :: scene_emotion_group(house_interior, joy) ;
 0.15 :: scene_emotion_group(house_interior, sadness).
 
-% industrial → harsh, polluted, unfriendly
+% industrial harsh, polluted, unfriendly
 t(_) :: scene_emotion_group(industrial, disgust) ;
 t(_) :: scene_emotion_group(industrial, sadness) ;
 t(_) :: scene_emotion_group(industrial, fear).
 
-% nature → positive, calm, open
+% nature positive, calm, open
 0.70 :: scene_emotion_group(nature, joy) ;
 0.20 :: scene_emotion_group(nature, trust) ;
 0.10 :: scene_emotion_group(nature, anticipation).
 
-% playful → games, fun, excitement
+% playful games, fun, excitement
 0.70 :: scene_emotion_group(playful, joy) ;
 0.20 :: scene_emotion_group(playful, surprise) ;
 0.10 :: scene_emotion_group(playful, anticipation).
 
-% relaxing → calm, safe, pleasant
+% relaxing calm, safe, pleasant
 0.70 :: scene_emotion_group(relaxing, joy) ;
 0.25 :: scene_emotion_group(relaxing, trust) ;
 0.05 :: scene_emotion_group(relaxing, anticipation).
 
-% royal → grandeur, awe, respect
+% royal grandeur, awe, respect
 0.50 :: scene_emotion_group(royal, joy) ;
 0.25 :: scene_emotion_group(royal, trust) ;
 0.25 :: scene_emotion_group(royal, surprise).
 
-% scary → obvious
+% scary obvious
 0.70 :: scene_emotion_group(scary, fear) ;
 0.20 :: scene_emotion_group(scary, surprise) ;
 0.10 :: scene_emotion_group(scary, disgust).
 
-% sport → competition, excitement, uncertainty
+% sport competition, excitement, uncertainty
 t(_) :: scene_emotion_group(sport, anticipation) ;
 t(_) :: scene_emotion_group(sport, joy) ;
 t(_) :: scene_emotion_group(sport, surprise).
 
-% summer → warm, bright, holiday vibes
+% summer warm, bright, holiday vibes
 0.70 :: scene_emotion_group(summer, joy) ;
 0.20 :: scene_emotion_group(summer, anticipation) ;
 0.10 :: scene_emotion_group(summer, trust).
 
-% transport → travel, waiting, risk
+% transport travel, waiting, risk
 0.50 :: scene_emotion_group(transport, anticipation) ;
 0.25 :: scene_emotion_group(transport, fear) ;
 0.25 :: scene_emotion_group(transport, trust).
 
-% urban → busy city: opportunities + stress
+% urban busy city: opportunities + stress
 0.40 :: scene_emotion_group(urban, anticipation) ;
 0.35 :: scene_emotion_group(urban, joy) ;
 0.25 :: scene_emotion_group(urban, anger).
 
-% woods → nature, but can be eerie
+% woods nature, but can be eerie
 0.60 :: scene_emotion_group(woods, joy) ;
 0.25 :: scene_emotion_group(woods, trust) ;
 0.15 :: scene_emotion_group(woods, fear).
 
-% work → structured, sometimes stressful / dull
+% work structured, sometimes stressful / dull
 t(_) :: scene_emotion_group(work, trust) ;
 t(_) :: scene_emotion_group(work, anticipation) ;
 t(_) :: scene_emotion_group(work, sadness).
