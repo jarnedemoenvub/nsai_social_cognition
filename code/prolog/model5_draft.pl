@@ -10,10 +10,113 @@ final_emotion_0([], SceneTensor, FinalEmo) :-
     va_cluster(Cluster, Valence, Arousal),
     va_emotion(Valence, Arousal, FinalEmo).
 
-final_emotion_
+final_emotion_0([], SceneTensor, FinalEmo):-
+   scene_cluster(SceneTensor, Cluster),
+   va_cluster(Cluster, Valence, Arousal),
+   % In case no emotion was found for the valence/arousal combo, find the nearest neighbour
+   \+ va_emotion(Valence, Arousal, _),
+   % With 50% chance choose neighbour of Valence, 50% choose neighbour of Arousal (make probs trainable)
+   va_neighbour(Valence, Arousal, FinalEmo).
+
+higher_value(very_low, low).
+higher_value(very_low, mid).
+higher_value(very_low, high).
+higher_value(very_low, very_high).
+
+higher_value(low, mid).
+higher_value(low, high).
+higher_value(low, very_high).
+
+higher_value(mid, high).
+higher_value(mid, very_high).
+
+higher_value(high, very_high).
+
+lower_value(very_high, high).
+lower_value(very_high, mid).
+lower_value(very_high, low).
+lower_value(very_high, very_low).
+
+lower_value(high, mid).
+lower_value(high, low).
+lower_value(high, very_low).
+
+lower_value(mid, low).
+lower_value(mid, very_low).
+
+lower_value(low, very_low).
+
+t(0.5) :: valence_or_arousal(arousal);
+t(0.5) :: valence_or_arousal(valence).
+
+t(0.5) :: higher_or_lower(higher);
+t(0.5) :: higher_or_lower(lower).
+
+t(0.7) :: move_to_neighbour.
+
+% Valence
+va_neighbour(very_high, Arousal, FinalEmo):-
+   valence_or_arousal(valence),
+   % If feature is valence, we change the valence
+   % If valence is already the lowest or highest value, we can already change that
+   lower_value(very_high, NewValence),
+   va_emotion(NewValence, Arousal, FinalEmo).
+
+va_neighbour(very_low, Arousal, FinalEmo):-
+   valence_or_arousal(valence),
+   % If feature is valence, we change the valence
+   % If valence is already the lowest or highest value, we can already change that
+   higher_value(very_low, NewValence),
+   va_emotion(NewValence, Arousal, FinalEmo).
+
+va_neighbour(Valence, Arousal, FinalEmo):-
+   valence_or_arousal(valence),
+   % If feature is valence, we change the valence
+   % We change it to a higher value
+   higher_or_lower(higher),
+   higher_value(Valence, NewValence),
+   va_emotion(NewValence, Arousal, FinalEmo).
+
+va_neighbour(Valence, Arousal, FinalEmo):-
+   valence_or_arousal(arousal),
+   % If feature is valence, we change the valence
+   % We change it to a lower value
+   higher_or_lower(lower),
+   lower_value(Valence, NewValence),
+   va_emotion(NewValence, Arousal, FinalEmo).
+
+% Arousal
+va_neighbour(Valence, very_high, FinalEmo):-
+   valence_or_arousal(arousal),
+   % If feature is valence, we change the valence
+   % If valence is already the lowest or highest value, we can already change that
+   lower_value(very_high, NewArousal),
+   va_emotion(Valence, NewArousal, FinalEmo).
+
+va_neighbour(Valence, very_low, FinalEmo):-
+   valence_or_arousal(arousal),
+   % If feature is valence, we change the valence
+   % If valence is already the lowest or highest value, we can already change that
+   higher_value(very_low, NewArousal),
+   va_emotion(Valence, NewArousal, FinalEmo).
+
+va_neighbour(Valence, Arousal, FinalEmo):-
+   valence_or_arousal(arousal),
+   % If feature is valence, we change the valence
+   % We change it to a higher value
+   higher_or_lower(higher),
+   higher_value(Arousal, NewArousal),
+   va_emotion(Valence, NewArousal, FinalEmo).
+
+va_neighbour(Valence, Arousal, FinalEmo):-
+   valence_or_arousal(arousal),
+   % If feature is valence, we change the valence
+   % We change it to a lower value
+   higher_or_lower(lower),
+   lower_value(Arousal, NewArousal),
+   va_emotion(Valence, NewArousal, FinalEmo).
 
 % Zorg ervoor dat elke cluster wel naar een emotie mapt en dat alle emoties ook effectief bereikbaar zijn!
-
 va_cluster(0, very_low, very_high).
 va_cluster(1, mid, mid).
 va_cluster(2, low, mid).
@@ -47,10 +150,14 @@ va_emotion(low, very_low, boredom).
 va_emotion(very_low, mid, disgust).
 va_emotion(mid, very_low, distraction).
 va_emotion(very_high, high, ecstasy).
+
+% Cluster 0
 t(_)::va_emotion(very_low, very_high, grief);
 t(_)::va_emotion(very_low, very_high, rage);
 t(_)::va_emotion(very_low, very_high, terror).
 
 va_emotion(very_high, very_low, serenity).
 va_emotion(very_high, low, trust).
+
+% Cluster 1
 va_emotion(mid, mid, vigilance).
