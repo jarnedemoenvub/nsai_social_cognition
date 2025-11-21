@@ -42,3 +42,5 @@ ToDo
 
 
 18/11 --> parameters visualiseren
+
+21/11 --> threshold verhogen bij berekenen priors + gebruik maken van andere aanwezige features.
