@@ -6,11 +6,21 @@ nn(scene_model, [Scene], Cluster, [0, 1, 2, 3, 4, 5, 6, 7, 8]) ::
    scene_cluster(Scene, Cluster).
 
 final_emotion_0([], SceneTensor, FinalEmo) :-
-    scene_cluster(SceneTensor, Cluster),
-    va_cluster(Cluster, Valence, Arousal),
-    va_emotion(Valence, Arousal, FinalEmo).
+   dont_move_to_neighbour,
+   scene_cluster(SceneTensor, Cluster),
+   va_cluster(Cluster, Valence, Arousal),
+   va_emotion(Valence, Arousal, FinalEmo).
 
 final_emotion_0([], SceneTensor, FinalEmo):-
+   scene_cluster(SceneTensor, Cluster),
+   va_cluster(Cluster, Valence, Arousal),
+   % In case move_to_neighbour is true
+   move_to_neighbour,
+   % With 50% chance choose neighbour of Valence, 50% choose neighbour of Arousal (make probs trainable)
+   va_neighbour(Valence, Arousal, FinalEmo).
+
+final_emotion_0([], SceneTensor, FinalEmo):-
+   dont_move_to_neighbour,
    scene_cluster(SceneTensor, Cluster),
    va_cluster(Cluster, Valence, Arousal),
    % In case no emotion was found for the valence/arousal combo, find the nearest neighbour
@@ -52,7 +62,8 @@ t(0.5) :: valence_or_arousal(valence).
 t(0.5) :: higher_or_lower(higher);
 t(0.5) :: higher_or_lower(lower).
 
-t(0.7) :: move_to_neighbour.
+t(0.15) :: move_to_neighbour;
+t(0.85) :: dont_move_to_neighbour.
 
 % Valence
 va_neighbour(very_high, Arousal, FinalEmo):-
@@ -78,7 +89,7 @@ va_neighbour(Valence, Arousal, FinalEmo):-
    va_emotion(NewValence, Arousal, FinalEmo).
 
 va_neighbour(Valence, Arousal, FinalEmo):-
-   valence_or_arousal(arousal),
+   valence_or_arousal(valence),
    % If feature is valence, we change the valence
    % We change it to a lower value
    higher_or_lower(lower),
