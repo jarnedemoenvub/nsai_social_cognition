@@ -1,0 +1,9 @@
+Cluster 0 (industrial_stress): 26 scenes
+Cluster 1 (busy_social): 53 scenes
+Cluster 2 (functional_work): 28 scenes
+Cluster 3 (active_recreation): 59 scenes
+Cluster 4 (community): 34 scenes
+Cluster 5 (indoor): 54 scenes
+Cluster 6 (institutional_public): 43 scenes
+Cluster 7 (crowded_urban): 19 scenes
+Cluster 8 (leisure): 49 scenes
