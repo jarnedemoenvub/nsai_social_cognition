@@ -27,8 +27,26 @@
  \usepackage{tcolorbox}
  \newtcolorbox{definitionbox}[1][]{colback=gray!10!white,colframe=black,title=Definition,#1}
  \usepackage{listings}
- \lstset{basicstyle=\ttfamily\small,frame=single,columns=fullflexible}
+\lstdefinelanguage{Prolog}{
+  keywords={is,not,mod,div},
+  morecomment=[l]\%,
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+}
 
+\lstset{
+  language=Prolog,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{orange},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  frame=single,
+  breaklines=true,
+  tabsize=2,
+}
 \includepdfset{pagecommand=\thispagestyle{fancy}}
 \tcbuselibrary{breakable} 
 
@@ -54,11 +72,11 @@ Vrije Universiteit Brussel}
 \maketitle
 
 \section{Introduction}
-Humans effortlessly integrate facial expressions, body language, and situational cues to infer emotions and intentions. A raised eyebrow conveys doubt, while a smile can convey happiness or trust. Machines, however, have a harder time interpreting body language, context, and multi-person group structure to derive the overall meaning of a situation. Modern techniques such as machine learning and deep learning can recognize visual patterns with high accuracy, but they do so in a purely subsymbolic manner: neural networks map inputs to outputs without providing insight into how decisions are made. As a result, even if a system predicts the correct emotion of a social scene, it remains unclear \emph{why} the model reached that conclusion. This lack of transparency motivates the need for learning frameworks that support both perception and reasoning.
+Humans effortlessly integrate facial expressions, body language, and situational cues to infer emotions and intentions. A raised eyebrow conveys doubt, while a smile can convey happiness or trust. Machines, however, have a harder time interpreting body language, context, and multi-person group structure to derive the overall meaning of a situation. Modern techniques such as machine learning and deep learning can recognize visual patterns with high accuracy, but they do so in a purely subsymbolic manner: neural networks map inputs to outputs without providing insight into how decisions are made. As a result, even if a system predicts the correct emotion of a social scene, it remains unclear why the model reached that conclusion. This lack of transparency motivates the need for learning frameworks that support both perception and reasoning.
 \vspace{1em}
 \newline This thesis explores how neurosymbolic AI can help machines take their next step towards genuine social cognition. Social cognition is the human ability to interpret emotions, intentions, and the subtle dynamics that shape everyday social interactions. 
 
-Machines are increasingly expected to navigate human environments. For example, they support people at home, assisting clinicians, mediating online interactions, or working together with humans in shared physical spaces. In all of these settings, an accurate recognition of emotions is essential for safe, trustworthy, and socially aware AI systems. Yet today's emotion-recognition models remain largely pattern-driven. They could detect a smile, but they often miss whether it is a joyful smile at a wedding, a polite smile in a meeting, or a strained smile in a stressful situation. This motivates the need for approaches that integrate perceptual cues with structured, human-like knowledge. 
+Machines are increasingly expected to navigate human environments. For example, they support people at home, mediating online interactions, or working together with humans in shared physical spaces. In all of these settings, an accurate recognition of emotions is essential for safe, trustworthy, and socially aware AI systems. Yet today's emotion-recognition models remain largely pattern-driven. They could detect a smile, but they often miss whether it is a joyful smile at a wedding, a polite smile in a meeting, or a strained smile in a stressful situation. This motivates the need for approaches that integrate perceptual cues with structured, human-like knowledge. 
 \vspace{1em}
 \newline Neurosymbolic AI provides a promising path forward by combining two complementary paradigms:
 
@@ -103,7 +121,7 @@ Alongside continuous representations, many emotion studies also rely on discrete
 \end{figure}
 
 \subsection{Emotion recognition in Multi-Person Social Scenes}
-Traditional computer-vision benchmarks for emotion recognition have focused on isolated faces with controlled pose, lighting, and expression. However, many real-world situations involve multiple individuals, rich social contexts, and interactions. All these cues together shape the overall emotional interpretation of a scene. Recognizing emotion in such settings requires combining facial cues with contextual information about the environment and the relationships between people.
+Traditional computer-vision benchmarks for emotion recognition have focused on isolated faces with controlled pose, lighting, and expression. However, many real-world situations involve multiple individuals, rich social contexts, and interactions. All these cues together shape the overall emotional interpretation of a scene. Recognizing emotion in such settings requires combining facial cues with contextual information about the environment.
 \vspace{1em}
 \newline The FindingEmo dataset was developed specifically to address this challenge. It contains images of natural social situations such as weddings, protests, sports events, family gatherings... These settings include multiple people and meaningful scenes. Each image is annotated with:
 
@@ -116,7 +134,38 @@ This dual annotation scheme enables models to capture both broad affective tone 
 \vspace{1em}
 \newline This dataset, therefore, highlights the complexity of social emotion recognition: it is inherently multi-modal (faces + context), relational (multiple individuals in a single image), and approximate (human annotations include uncertainty). This motivates the interest in computational frameworks that can combine perception with structured reasoning.
 
+\subsection{Logic-Based and Probabilistic Reasoning with Deep Learning}
+One family of tools that can combine perception with structured reasoning comes from logic programming, which provides a formal way to represent knowledge and reason with it. DeepProbLog is a framework that brings this kind of reasoning together with neural networks.
 
+\subsubsection{Prolog: Representing Knowledge Through Rules}
+Prolog is a logic programming language where knowledge is expressed using facts and rules.
+
+\begin{itemize}
+	\item Facts state that something is true:
+	\begin{lstlisting}
+	wedding_scene(img1).
+	smiling(person3).
+	\end{lstlisting}
+
+	\item Rules express implications:
+	\begin{lstlisting}
+	happy_event(X) :- wedding_scene(X).
+	\end{lstlisting}
+	Which means that X is a happy event whenever X is a wedding scene. Prolog can derive new information by chaining these rules. For example, img1 is a wedding scene, Prolog can infer that img1 is also a happy event. This symbolic 		reasoning is powerful but deterministic and does not naturally handle uncertainty or noisy predictions.
+\end{itemize}
+
+\subsection{ProbLog: Adding Probabilities to Logical Facts}
+ProbLog extends Prolog by allowing facts to carry probabilities:
+\begin{lstlisting}
+0.8 :: smiling(person3).
+0.3 :: raining(scene).
+\end{lstlisting}
+Which means that person3 is smiling with probability 0.8 and the scene is rainy with probability 0.3.
+\vspace{1em}
+\newline ProbLog also inherits Prolog's rules, so we can express:
+\begin{lstlisting}
+	positive_mood(X) :- smiling(X).
+\end{lstlisting}
 
 
 \end{document}
