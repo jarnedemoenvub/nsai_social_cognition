@@ -54,18 +54,23 @@ combine_aro_bin(F, S, M) :-
 combine_aro_bin(F, S, F) :-
     large_diff(F, S).
 
+eucl_distance(CV, CA, EV, EA, D) :-
+    DX is CV - EV,
+    DY is CA - EA,
+    D is sqrt(DX*DX + DY*DY).
+
 % ======================================================
 %   Emotion Prototypes (from VA centroids)
 % ======================================================
 
-emotion_bin(anger,         5, 17).
-emotion_bin(fear,          4, 18).
-emotion_bin(disgust,       9, 10).
-emotion_bin(sadness,       6, 12).
-emotion_bin(joy,          17, 10).
-emotion_bin(trust,        18,  9).
-emotion_bin(anticipation, 16, 12).
-emotion_bin(surprise,     10, 16).
+emotion_bin(0, 5, 12). % anger
+emotion_bin(1, 12, 8). % anticipation
+emotion_bin(2, 7, 8). % disgust
+emotion_bin(3, 6, 11). % fear
+emotion_bin(4, 16, 10). % joy
+emotion_bin(5, 5, 11). % sadness
+emotion_bin(6, 12, 9). % surprise
+emotion_bin(7, 15, 9). % trust
 
 % ======================================================
 %   Final Emotion Derivation
@@ -83,5 +88,34 @@ final_emotion(FaceFeat, SceneFeat, Emotion) :-
     combine_val_bin(FV, SV, CV),
     combine_aro_bin(FA, SA, CA),
 
-    % 3. Deterministic VA → Emotion
-    emotion_bin(Emotion, CV, CA).
+    closest_emotion(CV, CA, Emotion).
+
+test_face_val_bin(FaceFeat, VBin) :-
+    face_val_bin(FaceFeat, VBin).
+
+test_face_aro_bin(FaceFeat, ABin) :-
+    face_aro_bin(FaceFeat, ABin).
+
+test_scene_val_bin(SceneFeat, VBin) :-
+    scene_val_bin(SceneFeat, VBin).
+
+test_scene_aro_bin(SceneFeat, ABin) :-
+    scene_aro_bin(SceneFeat, ABin).
+
+test_combine_val_bin(FaceFeat, SceneFeat, CV) :-
+
+    % 1. Neural predictions
+    face_val_bin(FaceFeat, FV),
+    scene_val_bin(SceneFeat, SV),
+
+    % 2. Symbolic combination
+    combine_val_bin(FV, SV, CV).
+
+test_combine_aro_bin(FaceFeat, SceneFeat, CA) :-
+
+    % 1. Neural predictions
+    face_aro_bin(FaceFeat, FA),
+    scene_aro_bin(SceneFeat, SA),
+
+    % 2. Symbolic combination
+    combine_aro_bin(FA, SA, CA).
