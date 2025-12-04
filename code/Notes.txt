@@ -44,3 +44,7 @@ ToDo
 18/11 --> parameters visualiseren
 
 21/11 --> threshold verhogen bij berekenen priors + gebruik maken van andere aanwezige features.
+
+3/12 --> Zie foto voor logica van combineren. Wat kunnen we nu leren uit alles wat ik al geprobeerd heb?
+Wat zou ik willen conlcuderen opb de experimenten? Mijn puur neuro aanpak. Hou verhoudt zich dat tot de experimenten in FE. 
+Gooi zeker geen dingen weg. Ik kan conclusies trekken uit eerdere implementaties. 
