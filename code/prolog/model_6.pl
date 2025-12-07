@@ -18,34 +18,59 @@ nn(va2emotion_model, [ValBin, AroBin], Emotion,
     [anger, anticipation, disgust, fear, joy, sadness, surprise, trust]) ::
     closest_emotion(ValBin, AroBin, Emotion).
 
-
 small_diff(F, S)  :- abs(F - S) =< 1.
 medium_diff(F, S) :- D is abs(F - S), D >= 2, D =< 3.
 large_diff(F, S)  :- abs(F - S) >= 4.
 
 % Valence combination
-combine_val_bin(F, S, M) :-
-    small_diff(F, S),
-    M is (F + S) // 2.
+t(_) :: use_face_small_val(FV, SV) ;
+t(_) :: use_scene_small_val(FV, SV) :-
+    small_diff(FV, SV).
+
+t(_) :: use_face_big_val(FV, SV) ;
+t(_) :: use_scene_big_val(FV, SV) :-
+    large_diff(FV, SV).
+
+combine_val_bin(FV, SV, FV) :-
+    use_face_small_val(FV, SV).
+
+combine_val_bin(FV, SV, SV) :-
+    use_scene_small_val(FV, SV).
 
 combine_val_bin(F, S, M) :-
     medium_diff(F, S),
     M is (2*F + S) // 3.
 
-combine_val_bin(F, S, F) :-
-    large_diff(F, S).
+combine_val_bin(FV, SV, FV) :-
+    use_face_big_val(FV, SV).
+
+combine_val_bin(FV, SV, SV) :-
+    use_scene_big_val(FV, SV).
 
 % Arousal combination
-combine_aro_bin(F, S, M) :-
-    small_diff(F, S),
-    M is (F + S) // 2.
+t(_) :: use_face_small_aro(FA, SA) ;
+t(_) :: use_scene_small_aro(FA, SA) :-
+    small_diff(FA, SA).
+
+t(_) :: use_face_big_aro(FA, SA) ;
+t(_) :: use_scene_big_aro(FA, SA) :-
+    large_diff(FA, SA).
+
+combine_aro_bin(FA, SA, FA) :-
+    use_face_small_aro(FA, SA).
+
+combine_aro_bin(FA, SA, SA) :-
+    use_scene_small_aro(FA, SA).
 
 combine_aro_bin(F, S, M) :-
     medium_diff(F, S),
     M is (2*F + S) // 3.
 
-combine_aro_bin(F, S, F) :-
-    large_diff(F, S).
+combine_aro_bin(FV, SV, FV) :-
+    use_face_big_aro(FV, SV).
+
+combine_aro_bin(FV, SV, SV) :-
+    use_scene_big_aro(FV, SV).
 
 final_emotion(FaceFeat, SceneFeat, Emotion) :-
 
