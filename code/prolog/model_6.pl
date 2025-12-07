@@ -90,3 +90,6 @@ test_combine_aro_bin(FaceFeat, SceneFeat, CA) :-
 
     % Symbolic combination
     combine_aro_bin(FA, SA, CA).
+
+test_closest_emotion(ValBin, AroBin, Emotion) :-
+    closest_emotion(ValBin, AroBin, Emotion).
