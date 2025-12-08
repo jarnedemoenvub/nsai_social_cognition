@@ -22,19 +22,20 @@ small_diff(F, S)  :- abs(F - S) =< 1.
 medium_diff(F, S) :- D is abs(F - S), D >= 2, D =< 3.
 large_diff(F, S)  :- abs(F - S) >= 4.
 
-% Valence combination
-t(_) :: use_face_small_val(FV, SV) ;
-t(_) :: use_scene_small_val(FV, SV) :-
-    small_diff(FV, SV).
+% Valence combination switches
+0.8 :: use_face_small_val(F,S) ; 0.2 :: use_scene_small_val(F,S).
+0.7 :: use_face_big_val(F,S)   ; 0.3 :: use_scene_big_val(F,S).
 
-t(_) :: use_face_big_val(FV, SV) ;
-t(_) :: use_scene_big_val(FV, SV) :-
-    large_diff(FV, SV).
+% Arousal combination switches
+0.6 :: use_face_small_aro(F,S) ; 0.4 :: use_scene_small_aro(F,S).
+0.5 :: use_face_big_aro(F,S)   ; 0.5 :: use_scene_big_aro(F,S).
 
 combine_val_bin(FV, SV, FV) :-
+    small_diff(FV, SV),
     use_face_small_val(FV, SV).
 
 combine_val_bin(FV, SV, SV) :-
+    small_diff(FV, SV),
     use_scene_small_val(FV, SV).
 
 combine_val_bin(F, S, M) :-
@@ -42,35 +43,32 @@ combine_val_bin(F, S, M) :-
     M is (2*F + S) // 3.
 
 combine_val_bin(FV, SV, FV) :-
+    large_diff(FV, SV),
     use_face_big_val(FV, SV).
 
 combine_val_bin(FV, SV, SV) :-
+    large_diff(FV, SV),
     use_scene_big_val(FV, SV).
 
-% Arousal combination
-t(_) :: use_face_small_aro(FA, SA) ;
-t(_) :: use_scene_small_aro(FA, SA) :-
-    small_diff(FA, SA).
-
-t(_) :: use_face_big_aro(FA, SA) ;
-t(_) :: use_scene_big_aro(FA, SA) :-
-    large_diff(FA, SA).
-
 combine_aro_bin(FA, SA, FA) :-
+    small_diff(FA, SA),
     use_face_small_aro(FA, SA).
 
 combine_aro_bin(FA, SA, SA) :-
+    small_diff(FA, SA),
     use_scene_small_aro(FA, SA).
 
 combine_aro_bin(F, S, M) :-
     medium_diff(F, S),
     M is (2*F + S) // 3.
 
-combine_aro_bin(FV, SV, FV) :-
-    use_face_big_aro(FV, SV).
+combine_aro_bin(FA, SA, FA) :-
+    large_diff(FA, SA),
+    use_face_big_aro(FA, SA).
 
-combine_aro_bin(FV, SV, SV) :-
-    use_scene_big_aro(FV, SV).
+combine_aro_bin(FA, SA, SA) :-
+    large_diff(FA, SA),
+    use_scene_big_aro(FA, SA).
 
 final_emotion(FaceFeat, SceneFeat, Emotion) :-
 
