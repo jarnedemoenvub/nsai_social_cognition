@@ -34,7 +34,7 @@ scene_prior(art_studio, 3.87, 2.56).
 scene_prior(artists_loft, 3.77, 2.15).
 scene_prior(assembly_line, 2.59, 2.81).
 scene_prior(athletic_field_outdoor, 4.16, 3.16).
-scene_prior(atrium_public, 4.48, 4.02).
+scene_prior(atrium_public, 4.16, 2.55).
 scene_prior(attic, 1.67, 3.0).
 scene_prior(auditorium, 3.41, 2.83).
 scene_prior(auto_factory, 1.5, 2.93).
@@ -46,15 +46,15 @@ scene_prior(balcony_interior, 4.31, 2.62).
 scene_prior(ball_pit, 3.77, 2.86).
 scene_prior(ballroom, 3.96, 3.17).
 scene_prior(bamboo_forest, 3.84, 2.8).
-scene_prior(bank_vault, 5.71, 3.88).
+scene_prior(bank_vault, 1.58, 0.3).
 scene_prior(banquet_hall, 3.86, 2.6).
 scene_prior(bar, 3.34, 3.18).
-scene_prior(barn, 1.4, 5.12).
+scene_prior(barn, 1.04, 3.13).
 scene_prior(barndoor, 3.38, 2.25).
 scene_prior(baseball_field, 3.89, 2.87).
 scene_prior(basement, 2.8, 3.4).
 scene_prior(basketball_court_indoor, 4.21, 3.23).
-scene_prior(bathroom, 0.91, 4.74).
+scene_prior(bathroom, 0.3, 4.27).
 scene_prior(bazaar_indoor, 3.11, 3.02).
 scene_prior(bazaar_outdoor, 2.56, 3.09).
 scene_prior(beach, 4.73, 3.23).
@@ -68,7 +68,7 @@ scene_prior(berth, 5.0, 3.33).
 scene_prior(biology_laboratory, 3.84, 2.58).
 scene_prior(boardwalk, 3.8, 2.67).
 scene_prior(boat_deck, 3.05, 3.05).
-scene_prior(boathouse, 0.97, 4.57).
+scene_prior(boathouse, 2.9, 3.36).
 scene_prior(bookstore, 3.77, 2.46).
 scene_prior(booth_indoor, 3.65, 2.38).
 scene_prior(botanical_garden, 4.25, 3.75).
@@ -76,9 +76,9 @@ scene_prior(bow_window_indoor, 3.52, 2.9).
 scene_prior(bowling_alley, 4.8, 2.4).
 scene_prior(boxing_ring, 3.27, 3.44).
 scene_prior(bridge, 3.0, 2.0).
-scene_prior(building_facade, 3.63, 5.39).
+scene_prior(building_facade, 5.04, 1.27).
 scene_prior(bullring, 2.8, 3.35).
-scene_prior(burial_chamber, 0.38, 3.78).
+scene_prior(burial_chamber, 4.92, 5.81).
 scene_prior(bus_interior, 3.37, 2.68).
 scene_prior(bus_station_indoor, 3.12, 2.62).
 scene_prior(butchers_shop, 3.0, 2.39).
@@ -96,7 +96,7 @@ scene_prior(carrousel, 3.48, 2.86).
 scene_prior(castle, 3.62, 3.25).
 scene_prior(catacomb, 2.0, 4.5).
 scene_prior(cemetery, 2.34, 2.97).
-scene_prior(chalet, 5.05, 1.48).
+scene_prior(chalet, 1.08, 2.42).
 scene_prior(chemistry_lab, 3.59, 2.6).
 scene_prior(childs_room, 3.6, 2.2).
 scene_prior(church_indoor, 4.08, 3.02).
@@ -115,8 +115,8 @@ scene_prior(conference_room, 3.5, 2.23).
 scene_prior(construction_site, 3.15, 2.59).
 scene_prior(corn_field, 3.5, 3.25).
 scene_prior(corral, 3.31, 2.81).
-scene_prior(corridor, 5.83, 2.41).
-scene_prior(cottage, 4.61, 2.15).
+scene_prior(corridor, 5.84, 0.13).
+scene_prior(cottage, 4.72, 4.49).
 scene_prior(courthouse, 2.0, 4.0).
 scene_prior(courtyard, 3.67, 1.83).
 scene_prior(creek, 4.62, 2.5).
@@ -128,7 +128,7 @@ scene_prior(department_store, 3.0, 2.62).
 scene_prior(desert_sand, 2.14, 4.86).
 scene_prior(desert_vegetation, 3.11, 2.92).
 scene_prior(desert_road, 4.0, 3.29).
-scene_prior(diner_outdoor, 4.21, 4.22).
+scene_prior(diner_outdoor, 1.52, 1.13).
 scene_prior(dining_hall, 4.3, 2.3).
 scene_prior(dining_room, 5.5, 0.5).
 scene_prior(discotheque, 3.76, 3.26).
@@ -140,7 +140,7 @@ scene_prior(driveway, 3.14, 3.0).
 scene_prior(drugstore, 3.6, 2.2).
 scene_prior(elevator_door, 3.16, 2.93).
 scene_prior(elevator_lobby, 3.34, 2.81).
-scene_prior(elevator_shaft, 1.48, 2.75).
+scene_prior(elevator_shaft, 1.98, 0.15).
 scene_prior(embassy, 2.76, 2.79).
 scene_prior(engine_room, 3.23, 3.62).
 scene_prior(entrance_hall, 3.06, 3.06).
@@ -148,9 +148,9 @@ scene_prior(escalator_indoor, 3.56, 3.33).
 scene_prior(excavation, 3.26, 2.95).
 scene_prior(fabric_store, 2.82, 3.12).
 scene_prior(farm, 3.5, 1.95).
-scene_prior(fastfood_restaurant, 1.33, 5.32).
+scene_prior(fastfood_restaurant, 4.9, 3.42).
 scene_prior(field_cultivated, 3.57, 1.57).
-scene_prior(field_wild, 5.24, 5.58).
+scene_prior(field_wild, 1.2, 5.47).
 scene_prior(field_road, 5.67, 3.67).
 scene_prior(fire_escape, 4.0, 2.75).
 scene_prior(fire_station, 2.61, 2.9).
@@ -162,20 +162,20 @@ scene_prior(football_field, 3.81, 3.32).
 scene_prior(forest_broadleaf, 3.57, 3.86).
 scene_prior(forest_path, 4.46, 2.69).
 scene_prior(forest_road, 3.29, 3.57).
-scene_prior(formal_garden, 0.88, 5.23).
+scene_prior(formal_garden, 4.5, 3.62).
 scene_prior(fountain, 3.89, 2.82).
 scene_prior(galley, 5.0, 2.0).
 scene_prior(garage_indoor, 6.0, 4.0).
-scene_prior(garage_outdoor, 4.61, 1.22).
+scene_prior(garage_outdoor, 4.25, 4.8).
 scene_prior(gas_station, 2.85, 2.59).
 scene_prior(gazebo_exterior, 6.0, 0.0).
 scene_prior(general_store_indoor, 5.0, 1.0).
-scene_prior(general_store_outdoor, 2.08, 0.04).
+scene_prior(general_store_outdoor, 1.71, 0.99).
 scene_prior(gift_shop, 3.5, 2.0).
 scene_prior(glacier, 3.06, 3.06).
 scene_prior(golf_course, 3.48, 2.59).
 scene_prior(greenhouse_indoor, 3.62, 2.12).
-scene_prior(greenhouse_outdoor, 2.15, 2.61).
+scene_prior(greenhouse_outdoor, 5.26, 0.61).
 scene_prior(grotto, 1.0, 6.0).
 scene_prior(gymnasium_indoor, 4.19, 2.82).
 scene_prior(hangar_indoor, 3.58, 1.92).
@@ -186,24 +186,24 @@ scene_prior(hayfield, 4.0, 3.0).
 scene_prior(heliport, 2.2, 2.6).
 scene_prior(highway, 3.86, 2.14).
 scene_prior(home_office, 4.33, 3.67).
-scene_prior(home_theater, 3.67, 1.89).
+scene_prior(home_theater, 3.94, 3.71).
 scene_prior(hospital, 3.41, 2.18).
 scene_prior(hospital_room, 3.59, 2.89).
 scene_prior(hot_spring, 1.95, 3.74).
-scene_prior(hotel_outdoor, 0.14, 5.12).
+scene_prior(hotel_outdoor, 0.31, 5.93).
 scene_prior(hotel_room, 4.0, 2.63).
-scene_prior(house, 0.38, 3.72).
+scene_prior(house, 3.24, 2.23).
 scene_prior(hunting_lodge_outdoor, 4.0, 2.0).
 scene_prior(ice_cream_parlor, 4.77, 2.51).
 scene_prior(ice_floe, 3.2, 4.4).
 scene_prior(ice_shelf, 3.4, 3.6).
 scene_prior(ice_skating_rink_indoor, 3.19, 2.9).
 scene_prior(ice_skating_rink_outdoor, 3.05, 2.77).
-scene_prior(iceberg, 3.77, 3.83).
+scene_prior(iceberg, 0.34, 4.92).
 scene_prior(igloo, 4.09, 3.64).
-scene_prior(industrial_area, 5.37, 2.63).
+scene_prior(industrial_area, 4.94, 4.54).
 scene_prior(inn_outdoor, 6.0, 6.0).
-scene_prior(islet, 3.98, 2.13).
+scene_prior(islet, 3.47, 0.77).
 scene_prior(jacuzzi_indoor, 4.67, 2.67).
 scene_prior(jail_cell, 2.64, 3.07).
 scene_prior(japanese_garden, 5.0, 1.0).
@@ -230,17 +230,17 @@ scene_prior(lobby, 3.25, 2.65).
 scene_prior(lock_chamber, 2.75, 3.38).
 scene_prior(locker_room, 3.27, 3.09).
 scene_prior(mansion, 4.0, 4.0).
-scene_prior(manufactured_home, 0.14, 0.49).
+scene_prior(manufactured_home, 5.2, 2.03).
 scene_prior(market_indoor, 3.83, 2.0).
 scene_prior(market_outdoor, 2.99, 2.82).
 scene_prior(marsh, 4.67, 3.67).
 scene_prior(martial_arts_gym, 3.65, 2.9).
 scene_prior(mausoleum, 3.5, 3.5).
 scene_prior(medina, 3.12, 2.9).
-scene_prior(mezzanine, 5.68, 1.85).
+scene_prior(mezzanine, 4.26, 4.3).
 scene_prior(moat_water, 2.0, 3.67).
 scene_prior(mosque_outdoor, 2.64, 3.82).
-scene_prior(motel, 1.88, 0.86).
+scene_prior(motel, 1.19, 1.4).
 scene_prior(mountain, 4.43, 2.79).
 scene_prior(mountain_path, 4.0, 2.94).
 scene_prior(mountain_snowy, 3.82, 2.64).
@@ -254,7 +254,7 @@ scene_prior(nursing_home, 3.89, 2.73).
 scene_prior(oast_house, 5.5, 2.75).
 scene_prior(ocean, 3.58, 3.72).
 scene_prior(office, 3.53, 2.58).
-scene_prior(office_building, 5.12, 2.73).
+scene_prior(office_building, 1.59, 4.12).
 scene_prior(office_cubicles, 3.71, 2.45).
 scene_prior(oilrig, 1.0, 4.0).
 scene_prior(operating_room, 3.09, 3.08).
@@ -262,10 +262,10 @@ scene_prior(orchard, 4.08, 3.02).
 scene_prior(orchestra_pit, 3.69, 3.03).
 scene_prior(pagoda, 5.0, 5.0).
 scene_prior(palace, 3.15, 2.92).
-scene_prior(pantry, 0.44, 3.11).
+scene_prior(pantry, 2.76, 3.52).
 scene_prior(park, 3.82, 2.89).
 scene_prior(parking_garage_indoor, 4.0, 2.0).
-scene_prior(parking_garage_outdoor, 4.51, 2.48).
+scene_prior(parking_garage_outdoor, 0.36, 4.41).
 scene_prior(parking_lot, 2.91, 2.9).
 scene_prior(pasture, 4.4, 2.0).
 scene_prior(patio, 3.91, 2.34).
@@ -310,13 +310,13 @@ scene_prior(science_museum, 3.48, 3.18).
 scene_prior(server_room, 2.4, 3.0).
 scene_prior(shed, 5.0, 2.0).
 scene_prior(shoe_shop, 2.38, 3.48).
-scene_prior(shopfront, 2.04, 4.49).
+scene_prior(shopfront, 4.76, 4.86).
 scene_prior(shopping_mall_indoor, 1.0, 3.0).
 scene_prior(shower, 3.4, 2.6).
 scene_prior(ski_resort, 3.11, 2.56).
 scene_prior(ski_slope, 3.76, 3.07).
 scene_prior(sky, 3.33, 2.33).
-scene_prior(skyscraper, 0.84, 2.64).
+scene_prior(skyscraper, 5.38, 5.5).
 scene_prior(slum, 2.78, 3.18).
 scene_prior(snowfield, 4.0, 3.5).
 scene_prior(soccer_field, 3.95, 3.05).
@@ -343,7 +343,7 @@ scene_prior(temple_asia, 4.0, 2.5).
 scene_prior(throne_room, 3.0, 2.86).
 scene_prior(ticket_booth, 4.17, 1.83).
 scene_prior(topiary_garden, 3.09, 2.64).
-scene_prior(tower, 0.09, 3.47).
+scene_prior(tower, 0.44, 2.23).
 scene_prior(toyshop, 3.82, 2.88).
 scene_prior(train_interior, 3.29, 2.86).
 scene_prior(train_station_platform, 4.11, 2.78).
@@ -352,7 +352,7 @@ scene_prior(tree_house, 3.29, 2.57).
 scene_prior(trench, 2.68, 2.86).
 scene_prior(tundra, 4.17, 2.75).
 scene_prior(underwater_ocean_deep, 4.0, 2.5).
-scene_prior(utility_room, 1.38, 3.14).
+scene_prior(utility_room, 2.42, 1.44).
 scene_prior(valley, 4.2, 2.4).
 scene_prior(vegetable_garden, 4.1, 2.1).
 scene_prior(veterinarians_office, 3.83, 2.95).
@@ -367,7 +367,7 @@ scene_prior(water_tower, 3.0, 0.0).
 scene_prior(waterfall, 2.5, 2.0).
 scene_prior(watering_hole, 3.63, 3.41).
 scene_prior(wave, 2.0, 3.71).
-scene_prior(wet_bar, 5.43, 5.02).
+scene_prior(wet_bar, 0.41, 3.6).
 scene_prior(wheat_field, 4.37, 3.0).
 scene_prior(wind_farm, 2.0, 3.0).
 scene_prior(windmill, 0.0, 5.0).
@@ -440,4 +440,18 @@ final_emotion(FacePredictions, ScenePredictions, FaceFeat, SceneFeat, Emotion) :
     combine_val(FV, SV, CV),
     combine_aro(FA, SA, CA),
     va_to_emotion(FaceFeat, SceneFeat, CV, CA, Emotion). 
+
+test_va(FacePredictions, ScenePredictions, FV, FA, SV, SA) :-
+    face_emotion(FacePredictions, FaceEmotion),
+    face_prior(FaceEmotion, FV, FA),
+    scene(ScenePredictions, Scene),
+    scene_prior(Scene, SV, SA).
+
+test_combo(FacePredictions, ScenePredictions, CV, CA) :-
+    face_emotion(FacePredictions, FaceEmotion),
+    face_prior(FaceEmotion, FV, FA),
+    scene(ScenePredictions, Scene),
+    scene_prior(Scene, SV, SA),
+    combine_val(FV, SV, CV),
+    combine_aro(FA, SA, CA).
 
