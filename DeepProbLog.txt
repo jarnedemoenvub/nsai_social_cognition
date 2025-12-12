@@ -1,5 +1,0 @@
-engine.py
-- Softmax helper or convert tensors to lists, register it via model.register_foreign()
-- Model.get_tensor(term)
-- Model.eval()
-- Model.train()

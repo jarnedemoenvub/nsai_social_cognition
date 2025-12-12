@@ -1,0 +1,309 @@
+# Hoe DeepProbLog automatisch Bayesiaanse fusie uitvoert
+
+## 1. Het kernprobleem dat je oplost
+
+Je doel is het volgende:
+
+> Uit één afbeelding wil je een **globale emotionele interpretatie** afleiden
+> (valence en arousal),
+> rekening houdend met:
+>
+> * gezichtsuitdrukkingen (wat je ziet)
+> * de scène / context (wat de situatie betekent)
+
+Belangrijk:
+deze twee informatiebronnen kunnen **conflicteren**.
+
+Voorbeelden:
+
+* Neutrale gezichten op een **begrafenis**
+* Lachende gezichten op een **formele ceremonie**
+* Angstige gezichten in een **pretparkattractie**
+
+Mensen lossen dit op door **contextuele interpretatie**:
+
+> “In deze situatie betekent een glimlach niet noodzakelijk geluk.”
+
+Je wilt dat je model **op dezelfde manier redeneert**.
+
+---
+
+## 2. Waarom dit een Bayesiaans probleem is (intuïtief)
+
+Menselijk redeneren volgt grofweg dit patroon:
+
+1. *Wat zie ik?* → gezichten (onzeker)
+2. *In welke situatie is dit?* → context (onzeker)
+3. *Wat betekent dit samen?* → eindinterpretatie
+
+Dat is precies de Bayesiaanse vraag:
+
+> “Wat is de meest waarschijnlijke emotionele toestand,
+> gegeven wat ik zie én wat ik weet over de situatie?”
+
+Je hoeft **geen Bayes-formules te schrijven**,
+maar het **denkproces is Bayesiaans**.
+
+---
+
+## 3. ProbLog: redeneren over mogelijke werelden
+
+### 3.1 Wat doet ProbLog fundamenteel?
+
+ProbLog redeneert niet in één wereld, maar in **alle mogelijke werelden**.
+
+Elke probabilistische uitspraak zoals:
+
+```prolog
+0.8::rain.
+```
+
+betekent:
+
+* In 80% van de mogelijke werelden regent het
+* In 20% niet
+
+Een *wereld* is gewoon:
+
+> een consistente keuze van wat waar en onwaar is
+
+Als je een query stelt, doet ProbLog:
+
+1. Genereer alle werelden die logisch mogelijk zijn
+2. Bereken de kans van elke wereld
+3. Sommeer de kansen van alle werelden waarin de query waar is
+
+👉 Dit **is exact Bayesiaanse marginalisatie**.
+
+---
+
+## 4. Wat DeepProbLog toevoegt
+
+DeepProbLog voegt één cruciale stap toe:
+
+> Sommige probabilistische feiten komen **niet uit vaste getallen**,
+> maar uit **neurale netwerken**.
+
+Bijvoorbeeld:
+
+```prolog
+nn(face_net, FaceImg, Emotion, Prob) ::
+    face_emotion(FaceImg, Emotion).
+```
+
+Betekenis:
+
+* Het neurale netwerk kijkt naar `FaceImg`
+* Het geeft een kans voor elke `Emotion`
+* Die kans wordt behandeld als een probabilistisch feit
+
+⚠️ Cruciaal inzicht:
+**Voor ProbLog maakt het niet uit waar de kans vandaan komt.**
+
+Voor ProbLog is:
+
+```prolog
+0.6::face_emotion(f1, happy).
+```
+
+en
+
+```prolog
+nn(..., 0.6)::face_emotion(f1, happy).
+```
+
+semantisch hetzelfde.
+
+➡️ Neurale perceptie = kansschatting
+➡️ Logica = Bayesiaanse inferentie
+
+---
+
+## 5. Twee informatiebronnen = twee verklaringen
+
+Je model heeft nu **twee manieren** om de emotie van een scène te verklaren:
+
+1. **Via gezichten**
+2. **Via context**
+
+In DeepProbLog beschrijf je dit niet met formules,
+maar met **alternatieve logische verklaringen**.
+
+---
+
+## 6. De sleutel: een latente beslissingsvariabele
+
+Je introduceert een *onzichtbare* variabele:
+
+```prolog
+context_dom(Image).
+```
+
+Betekenis:
+
+> “In deze interpretatie domineert de context.”
+
+Deze variabele is:
+
+* niet direct waargenomen
+* probabilistisch
+* afhankelijk van de context
+
+Bijvoorbeeld:
+
+```prolog
+0.8::context_dom(Image) :-
+    scene_context(Image, funeral).
+```
+
+Interpretatie:
+
+> “In 80% van de mogelijke werelden waarin dit een begrafenis is,
+> bepaalt de context de emotionele interpretatie.”
+
+Dit is **geen truc** — dit is exact hoe Bayes werkt:
+
+* je introduceert een verborgen variabele
+* je redeneert erover probabilistisch
+
+---
+
+## 7. Hoe fusie ontstaat zonder formule
+
+Nu schrijf je twee regels:
+
+```prolog
+final_valence(Image, V) :-
+    context_dom(Image),
+    scene_context(Image, C),
+    context_valence(C, V).
+```
+
+```prolog
+final_valence(Image, V) :-
+    \+ context_dom(Image),
+    face_valence(Image, V).
+```
+
+Dit betekent:
+
+* Als context domineert → gebruik contextbetekenis
+* Anders → gebruik gezichten
+
+Belangrijk:
+
+* **Beide regels kunnen waar zijn in verschillende werelden**
+* DeepProbLog beschouwt ze **allebei**
+
+---
+
+## 8. Wat gebeurt er tijdens inferentie?
+
+Stel:
+
+* Context = funeral (hoge kans)
+* `context_dom(Image)` = 0.8
+* Gezichten suggereren lichte positiviteit
+
+Dan ontstaan automatisch twee soorten werelden:
+
+### Wereldtype A (80%)
+
+* `context_dom = true`
+* Emotie komt uit context → negatief
+
+### Wereldtype B (20%)
+
+* `context_dom = false`
+* Emotie komt uit gezichten → licht positief
+
+Wanneer je vraagt:
+
+```prolog
+query(final_valence(Image, V)).
+```
+
+doet DeepProbLog:
+
+> “Wat is de totale kansmassa van werelden
+> waarin `V` negatief is,
+> en wat is de kansmassa waarin `V` positief is?”
+
+Dat is **precies Bayesiaanse posterior-inferentie**.
+
+---
+
+## 9. Waar zit de “strength” in dit verhaal?
+
+“Strength” is **geen wiskundige parameter**, maar:
+
+> *Hoe vaak in mogelijke werelden de context domineert*
+
+| Context | Strength | Kans context_dom |
+| ------- | -------- | ---------------- |
+| Funeral | Strong   | 0.8              |
+| Wedding | Strong   | 0.8              |
+| Party   | Medium   | 0.5              |
+| Park    | Weak     | 0.2              |
+
+Sterke context:
+
+* Meer werelden waarin context regeert
+
+Zwakke context:
+
+* Meer werelden waarin gezichten regeerden
+
+DeepProbLog telt deze werelden **automatisch correct op**.
+
+---
+
+## 10. Waarom dit exact Bayesiaanse fusie is
+
+In klassieke Bayes heb je:
+
+* prior (contextverwachting)
+* likelihood (gezichtsobservaties)
+* posterior (gecombineerde interpretatie)
+
+In DeepProbLog heb je:
+
+| Bayes             | DeepProbLog                            |
+| ----------------- | -------------------------------------- |
+| Prior             | `scene_context/2`, `context_valence/2` |
+| Likelihood        | `face_emotion/2`                       |
+| Latente variabele | `context_dom/1`                        |
+| Posterior         | `query(final_valence/2)`               |
+
+Het verschil zit **niet in wat er berekend wordt**,
+maar **in hoe jij het beschrijft**.
+
+---
+
+## 11. Het belangrijkste inzicht (neem dit mee)
+
+> **DeepProbLog voert geen Bayesiaanse fusie uit omdat jij een formule schrijft.
+> DeepProbLog voert Bayesiaanse fusie uit omdat jij alle mogelijke verklaringen beschrijft en hun waarschijnlijkheid.**
+
+De fusie:
+
+* ontstaat vanzelf
+* is exact
+* is differentieerbaar
+* is interpreteerbaar
+
+---
+
+## 12. Mentale samenvatting
+
+Denk zo:
+
+> “Ik beschrijf hoe de wereld zou kunnen zijn.
+> DeepProbLog rekent uit hoe waarschijnlijk elke mogelijkheid is.
+> De uiteindelijke emotie is wat overblijft na het optellen van alle mogelijkheden.”
+
+Dat **is** Bayesiaans redeneren.
+Dat **is** neurosymbolische fusie.
+En dat **is precies waar DeepProbLog sterk in is**.
+
+---

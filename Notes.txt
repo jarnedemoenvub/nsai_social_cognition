@@ -19,33 +19,6 @@ Literatuurstudie: sociale cognitie, SOTA sociale cognitie in neurale netwerken (
 - kort over psychologische kant, hoe werkt sociale cognitie in het menselijke brein
 Kan parallel gebeuren met het project.
 
-Done
----------------------
-- van plutchik, elk blad heeft een basis emotie. In code zit mapping van 21 naar 7 labels (6 komen er overeen met mijn basisemoties)
-- Die 6 zijn geimplementeerd
-- ook de placesmapping zit erin, tijdens predictie wordt er een matmul gedaan met de softmax van 365 values en de mappingsmatrix
-- Nu ingezien dat enkel trainen op emotielabel en crossentropie is niet goed. Emoties kunnen dichter en verder uit elkaar liggen dus sommige fouten zijn minder erg dan andere.
-CE vat dat niet dus is het beter om te trainen op valence en arousal values. Dan kan ik trainen op MSE;
-- Het kan ook een gedacht zijn om mijn emotierecognizer beter te trainen of gewoon een ander te kiezen. Ook niet alle gecropte images zijn even duidelijk en correct. Soms is er niet eens een gezicht te zien,
-er is betere supervisie nodig. Places zit over het algemeen wel beter.
-- Uiteindelijk zullen er regels nodig zijn die context-aware zijn (scene + group), iets met shared emotion, group happy, interaction? Regels die aangeven of scene valence en face valence overeenstemmen 
-- Neural predicate for body language?
-- Zeker interessant om te vergelijken: puur neuraal, neuraal + priors, neuraal + logic rules
-
-- scallop aanpak proberen
-- wat alser minderdan 3 gez zijn
-
-ToDo
-- Class-weighted loss gebruiken voor de crossentropy
-
-18/11 --> parameters visualiseren
-
-21/11 --> threshold verhogen bij berekenen priors + gebruik maken van andere aanwezige features.
-
-3/12 --> Zie foto voor logica van combineren. Wat kunnen we nu leren uit alles wat ik al geprobeerd heb?
-Wat zou ik willen conlcuderen opb de experimenten? Mijn puur neuro aanpak. Hou verhoudt zich dat tot de experimenten in FE. 
-Gooi zeker geen dingen weg. Ik kan conclusies trekken uit eerdere implementaties. 
-
 11/12 --> hoeveel keer in small, medi and big diff. Big arousal heeft voorrang op zwakke emoties die dus lage arousal hebben
 stilstan hoe ik een wetensch verantw verhaal vertel. Waarom heb ik bepaalde dingen gebrobeerd en wat heb ik eruit geleerd.
 Je kan zeggen: x is ons probleem. Probeer simpele oplossing, dit is onze opl. hoe simp opl verfijnen zodat het beter werkt.

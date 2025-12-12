@@ -1,0 +1,127 @@
+Literatuurstudie:
+-----
+sociale cognitie, SOTA sociale cognitie in neurale netwerken (vertrekken vanuit FindingEmopaper), recenter werk??
+- kennis over het probleem die ik wil oplossen , vorige pogingen, kennis over de methode (neuro symb AI), hoe sit DPL daarbinnen + werking
+- kort over psychologische kant, hoe werkt sociale cognitie in het menselijke brein
+
+Voorbereiding:
+-----
+Faces:
+Manieren om te combineren:
+    -   Simple average
+    -   Size-weighted average
+    -   Confidence weighted average (often better than size), here you need to use entropy.
+    -   Even better: a face importance wieght: wk​=α⋅sizek ​+ β⋅centralityk ​+ γ⋅confidencek​
+                     Size is prominence, centrality = attention bias. Confidence comes from entropy. Then normalize these weights
+
+Scenes:
+        | Context  | Valence | Arousal | Strength |
+        | -------- | ------- | ------- | -------- |
+        | Wedding  | +0.7    | +0.5    | strong   |
+        | Funeral  | −0.8    | −0.3    | strong   |
+        | Party    | +0.6    | +0.7    | medium   |
+        | Hospital | −0.2    | +0.2    | weak     |
+
+        | Strength | Meaning           | Numeric weight |
+        | -------- | ----------------- | -------------- |
+        | Weak     | context is a hint | 0.2            |
+        | Medium   | context matters   | 0.5            |
+        | Strong   | context dominates | 0.8            |
+
+Weight 0 = ignore context, 1 = ignore faces. Dit zijn priors, niet learnable
+Dan combineer je met V=(1−λ)Vf​+λVc​, idem voor Arousal
+
+Dankzij delta (numeric weight) kunnnen we nu zeggen, met kans delta, context domineert de interpretatie.
+
+P::context_dom(Image) :-
+    scene_context(Image, C),
+    context_strength(C, S),
+    strength_prob(S, P).
+
+In plaats van weighted sum, geef ik 2 mogelijke explanations:
+
+1: Faces gaan domineren:
+final_valence(Image, V) :-
+    \+ context_dom(Image),
+    face_valence(Image, V).
+
+2: Context zal domineren:
+final_valence(Image, V) :-
+    context_dom(Image),
+    scene_context(Image, C),
+    context_valence(C, V).
+
+IDEM voor arousal
+DPL doet automatisch Bayesian fusion, dit is hoe mensen redeneren.
+
+Dus:
+neurale outputs = kansen
+logica = Bayesiaanse inferentie
+
+Gebruik Heuristic met K = 30
+Let op van volgorde emoties van fer model
+
+NSAI1:
+-----
+Non DPL:
+Backbone en logits precalculaten van scene
+Scene model is een MLP starting from the backbone, mapping to one of the FE emotions
+Kunnen zelfde doen voor faces model, start from backbone and map naar FE Emotions via MLP.
+Welke performt beter?
+Maak ook model die hun features combineert en map naar FE Emotions.
+Misschien beter om hier regressors te trainen voor valence en arousal, niet per se emotion labels want die zijn minder betrouwbaar
+
+DPL:
+Met trainable parameter uitmaken welke bron meest betrouwbaar is.
+Doe dit met trainable MLP mapper en ook eens zonder trainable MLP mapper
+
+Wat zijn de resultaten bij het toevoegen van meta-informatie? (aantal faces en scene tag, mogelijks entropy waarden ook, max en min values)
+Analyseer zeker welke fouten al deze modellen maken en of er een verband is tussen de fouten die ze maken.
+
+NSAI2:
+-----
+Zowel face als scene hebben een softmax over de 7 emoties. We berekenen daar de entropie en max values van en gooien die samen als input
+voor een gateMLP die 4 values output. Een weight voor face 0, face 1, face 2... en weight voor de scene. Finale softmax is weighted sum 
+gebruik makende van de weights die dus output zijn van gateMLP. Dit deel is dus puur neuraal. 
+Dit wordt dan vermenigvuldigd met prior emo, waar ik dus een bepaalde emotie push gebruik makende van scene tag (maakt gebruik van mapmatrix van scene) en number of faces.
+
+NSAI3:
+-----
+Face model voorspelt alleen de emoties die rechtstreeks overeenkomen met de basic emoties uit FE. 
+Scene model maakt gebruik van mappingsmatrix. In prolog file staan er dan ADs die elke context met een prob mappen naar een van de 6 gemeenschappelijke
+emoties. Principe is zelfde als model 1. Trainable parameters zoeken uit welke bron meest betrouwbaar is. Ze worden hier op geen enkele manier
+gecombineerd. Hier wordt de scene prediction gewoon gehaald uit scene network die gebruik maakt van mapmatrix en dan adhv die uitkomst wordt er door AD gemapt naar final emotion.
+
+NSAI4:
+-----
+Hier probeerde ik een groter deel van zowel face als scene pretrained model trainable te maken. Ik berekende scene priors. Wat zijn de FE valence
+en arousal waarden gemiddeld gezien per scene prediction (niet gewogen, dus mss wel gaan wegen nu). Ik heb dan weighted kmeans erop losgelaten
+om zo automatisch de scenes te gaan clusteren ipv manueel clusters te maken en ze te benoemen. Hier werken we dus meer data driven.
+
+NSAI5:
+-----
+Baseline model gemaakt wat ik dus eigenlijk al moet doen in NSAI1. Hier staat de code voor pure neurale training. Dit model bereikt 41 % !!
+Device Aware module staat hier ook. Evaluate DPL with metrics ook enzo. Cross entropy loss van baseline model is 1.5
+
+NSAI6:
+-----
+Hier had ik 4 neurale netwerken: face_val, scene_val, face_aro en scene_aro. Ik heb ze gepretrained maar spijtig genoeg worden niet alle bins
+goed voorspeld, sommige totaal niet wat dus al direct een bottleneck is. Ze waren allemaal op CORN gepretrained.
+Hier begin ik ook te experimenteren met va2emotion. Ze kunnen op verschillende manieren:
+    - Euclidean distance from emotion centroids and turn into softmax (all in neural predicate)
+Anger en Anticipation werden vooral voorspeld.
+
+NSAI7:
+-----
+Hier staat de code voor de juiste volgorde van de fer labels.
+Dynamisch genereren van prolog code. Geen netwerk meer die valence and arousal voorspelt voor scene en faces maar nu gewoon waardes als
+feiten in prolog. Dan wordt er gekeken naar verschil in valence en arousal values. Dit berschil bepaalt hoe ze gecombineerd worden om dan vervolgens te mappen naar FE.
+Dit kan via eucl distance naar centroids en obv distance naar softmax of dit kan via MLP of gewoon kleinste eucl distance.
+Bereikte 30% accuracy. Finetuning van prolog file is nodig. Kan door FE dataset beter te analyseren en the bestuderen.
+
+NSAI8:
+Finale mapping van combined valence en arousal naar emotie gebeurt met Hybrid model dat als input CV, CA neemt samen met de backbone features
+van scene en faces.
+
+NSAI9:
+Geen idee, dit was 's nachts en ik gaf het op

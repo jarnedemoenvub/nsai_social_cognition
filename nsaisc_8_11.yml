@@ -1,4 +1,0 @@
-name: base_dpl
-channels:
-  - defaults
-prefix: C:\Users\jarne\miniconda3\envs\base_dpl
