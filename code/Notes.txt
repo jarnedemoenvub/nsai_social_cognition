@@ -35,11 +35,8 @@ er is betere supervisie nodig. Places zit over het algemeen wel beter.
 - scallop aanpak proberen
 - wat alser minderdan 3 gez zijn
 
-
 ToDo
 - Class-weighted loss gebruiken voor de crossentropy
-
-
 
 18/11 --> parameters visualiseren
 
@@ -48,3 +45,19 @@ ToDo
 3/12 --> Zie foto voor logica van combineren. Wat kunnen we nu leren uit alles wat ik al geprobeerd heb?
 Wat zou ik willen conlcuderen opb de experimenten? Mijn puur neuro aanpak. Hou verhoudt zich dat tot de experimenten in FE. 
 Gooi zeker geen dingen weg. Ik kan conclusies trekken uit eerdere implementaties. 
+
+11/12 --> hoeveel keer in small, medi and big diff. Big arousal heeft voorrang op zwakke emoties die dus lage arousal hebben
+stilstan hoe ik een wetensch verantw verhaal vertel. Waarom heb ik bepaalde dingen gebrobeerd en wat heb ik eruit geleerd.
+Je kan zeggen: x is ons probleem. Probeer simpele oplossing, dit is onze opl. hoe simp opl verfijnen zodat het beter werkt.
+model7: eerst analyse, kijk als ikmijn eenvoudig baselinemodel neem. en ik kijknaar resultaten: hoefout is het? zie ik een verband tss hoe fout die zijn en het verschil tussen faces en placs voorspelling.
+Bijvoorbeeld: baseline = model dat enkel naar scene kijkt. Is er een verband tussen waar places model verkeerd doet en het verschil tuss faces en scenes.
+
+grafiek bv: x as isfout die places maakt, y as is verschil tussen place en face model. Per image heb je dus een punt. Kan voor valence en voor arousal.
+stijgende lijn --> gezichtsuitdrukkingen relevant. Als grafiek ruis is dan weet je dat gezichten niet belangrijk waren.
+Ambiguity erin verwerken heel interessant. Mogelijks thresholds uit afleiden voor big small en med difference.
+
+Verhaalvan ja enkelface net,nu enklscene net, dan comb, dan dpl.
+
+Regression tree om 2 SIGNALen te combineren. (Zie foto)
+
+Welke images maakt baseline model fout?welke fout bij enkel scene en faces model
